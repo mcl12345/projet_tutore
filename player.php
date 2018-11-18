@@ -143,7 +143,9 @@ echo "<br /><br />
     <input type='submit' value='Envoyer' />
     </form>";
 
-echo "<a href=moderation.php?id=".$id_morceau.">Modérer</a>";
+if($_COOKIE["the_role"] == "administrateur") {
+  echo "<a href=moderation.php?id=".$id_morceau.">Modérer</a>";
+}
 
 echo '</div></div></div></body></html>';
 

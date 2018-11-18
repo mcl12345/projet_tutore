@@ -85,7 +85,7 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
      } else {
        echo '<li>';
      }
-     echo '<a href="upload.php">Upload</a>
+     echo '<a href="upload.php">Admin : Upload</a>
           </li>';
 
      if(basename($_SERVER['PHP_SELF']) == "ajout_artistes.php")  {
@@ -93,7 +93,7 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
      } else {
        echo '<li>';
      }
-     echo '<a href="ajout_artistes.php">Ajout artistes</a>
+     echo '<a href="ajout_artistes.php">Admin : Ajout artistes</a>
          </li>';
    }
    echo '</ul>

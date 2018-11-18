@@ -75,7 +75,7 @@ if( !empty($_POST["username"]) &&
                  $stmt->bindParam(':role', $my_role);
                  $stmt->execute();
 
-                 print_LOGO_FORMSEARCH_MENU();
+                 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
                  echo "Enregistrement effectué avec succès !<br />";
                  echo '  </body>
                    </html>';

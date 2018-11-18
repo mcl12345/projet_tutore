@@ -17,6 +17,8 @@ echo "<div class='row'>
         <div class='col-lg-4'>
             <div class='container'>";
 
+echo "<h3>Vidéos vues récemment</h3><br />";
+
 // Va chercher l'historique
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM historique WHERE id_user = ?");
@@ -32,7 +34,7 @@ while ($row = $stmt->fetch()) {
     }
 }
 
-echo "<form action='liste_recente.php' method='post'>
+echo "<br /><form action='liste_recente.php' method='post'>
 <input type='hidden' name='id_user' value='".$_GET["the_id"]."' />
 <input type='submit' value='Nettoyer l historique' /></form>";
 
