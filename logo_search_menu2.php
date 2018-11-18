@@ -77,25 +77,47 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
      echo '<li>';
    }
    echo '<a href="about.php">About</a>
-   </li>
-   ';
+   </li>';
    if($bool_verification_role) {
-     if(basename($_SERVER['PHP_SELF']) == "upload.php")  {
-       echo '<li class="active">';
-     } else {
-       echo '<li>';
-     }
-     echo '<a href="upload.php">Admin : Upload</a>
-          </li>';
+      echo '<li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">';
+            if(basename($_SERVER['PHP_SELF']) == "upload.php")  {
+              echo '<li class="active">';
+            } else {
+              echo '<li>';
+            }
+            echo '<a href="upload.php">Admin : Upload</a>
+           </li>';
 
-     if(basename($_SERVER['PHP_SELF']) == "ajout_artistes.php")  {
-       echo '<li class="active">';
-     } else {
-       echo '<li>';
-     }
-     echo '<a href="ajout_artistes.php">Admin : Ajout artistes</a>
-         </li>';
+           if(basename($_SERVER['PHP_SELF']) == "ajout_artistes.php")  {
+             echo '<li class="active">';
+           } else {
+             echo '<li>';
+           }
+           echo '<a href="ajout_artistes.php">Admin : Ajout artistes</a>
+           </li>';
+
+           if(basename($_SERVER['PHP_SELF']) == "add_artiste_to_morceau1.php")  {
+             echo '<li class="active">';
+           } else {
+             echo '<li>';
+           }
+           echo '<a href="add_artiste_to_morceau1.php">Admin : Ajout des artistes au morceau</a>
+           </li>';
+
+           if(basename($_SERVER['PHP_SELF']) == "add_genre_to_morceau1.php")  {
+             echo '<li class="active">';
+           } else {
+             echo '<li>';
+           }
+           echo '<a href="add_genre_to_morceau1.php">Admin : Ajout des genres au morceau</a>
+           </li>';
    }
+    echo '</ul>
+    </li>';
+
    echo '</ul>
    <ul class="nav navbar-nav navbar-right">';
 

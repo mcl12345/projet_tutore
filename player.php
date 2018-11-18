@@ -15,7 +15,35 @@ $stmt->execute(array($_GET["id"]));
 while ($row = $stmt->fetch()) {
     $morceau["file_name"] = $row["file_name"];
     $morceau["extension"] = $row["extension"];
-    $morceau["titre"] = $row["titre"];
+    $morceau["titre"]     = $row["titre"];
+}
+
+// Recherche des artistes
+$artistes = array();
+$stmt = $pdo->prepare("SELECT * FROM artiste_morceau WHERE id_morceau = ?");
+$stmt->execute(array($_GET["id"]));
+$i = 0;
+while ($row = $stmt->fetch()) {
+    $stmt_ = $pdo->prepare("SELECT * FROM artiste WHERE id = ?");
+    $stmt_->execute(array($row["id_artiste"]));
+    while ($ligne = $stmt_->fetch()) {
+        $artistes[$i] = $ligne["pseudonyme"];
+    }
+    $i++;
+}
+
+// Recherche des genres
+$genres = array();
+$stmt = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_morceau = ?");
+$stmt->execute(array($_GET["id"]));
+$i = 0;
+while ($row = $stmt->fetch()) {
+    $stmt_ = $pdo->prepare("SELECT * FROM genre WHERE id = ?");
+    $stmt_->execute(array($row["id_genre"]));
+    while ($ligne = $stmt_->fetch()) {
+        $genres[$i] = $ligne["nom"];
+    }
+    $i++;
 }
 
 // --------------------------------------------------
@@ -55,6 +83,8 @@ if(isset($_POST["commentaire"])) {
     $stmt_->execute();
 }
 
+// Affichage
+// -------------------------------
 echo "<div class='row'>
         <div class='col-lg-4'></div>
         <div class='col-lg-4'>
@@ -65,13 +95,23 @@ if($morceau["extension"] == ".ogg") {
     echo '<audio controls="controls">
       <source src="upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="audio/ogg" />
       Votre navigateur n\'est pas compatible
-    </audio><br /><br />';
+    </audio>';
 } else if($morceau["extension"] == ".webm") {
   echo '<video width="400" height="222" controls="controls">
     <source src="upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="video/webm" />
     Ici l\'alternative à la vidéo : upload_musiques/'.$morceau["file_name"].$morceau["extension"].'"
   </video>';
 }
+echo "<br /><br />Artistes : ";
+for($i=0; $i<sizeof($artistes); $i++) {
+    echo $artistes[$i] . " ";
+}
+echo "<br /><br />";
+echo "Genres : ";
+for($i=0; $i<sizeof($genres); $i++) {
+    echo $genres[$i] . " ";
+}
+echo "<br /><br />";
 
 // ----------------------------------
 // Affichage du like et du favoris

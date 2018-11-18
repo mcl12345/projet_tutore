@@ -98,11 +98,11 @@ if(isset($_POST['titre']) && isset($_POST['genre']) && isset($_POST['artiste']) 
             }
 
             // Va chercher l'id de l'artiste à ajouter
-            $id_user = 0;
-            $stmt = $pdo->prepare("SELECT * FROM user where username = ?");
+            $id_artiste = 0;
+            $stmt = $pdo->prepare("SELECT * FROM artiste where pseudonyme = ?");
             if ($stmt->execute(array($_POST['artiste']))) {
                  while ($row = $stmt->fetch()) {
-                     $id_user = $row['id'];
+                     $id_artiste = $row['id'];
                  }
            }
 
@@ -111,8 +111,8 @@ if(isset($_POST['titre']) && isset($_POST['genre']) && isset($_POST['artiste']) 
             $stmt->bindParam(':id_genre', $id_du_genre);
             $stmt->execute();
 
-            $stmt = $pdo->prepare("INSERT INTO artiste_morceau (id_user, id_morceau)  VALUES (:id_user, :id_morceau)");
-            $stmt->bindParam(':id_user', $id_user);
+            $stmt = $pdo->prepare("INSERT INTO artiste_morceau (id_artiste, id_morceau)  VALUES (:id_artiste, :id_morceau)");
+            $stmt->bindParam(':id_artiste', $id_artiste);
             $stmt->bindParam(':id_morceau', $id_morceau);
             $stmt->execute();
 
@@ -155,6 +155,8 @@ if(isset($_POST['titre']) && isset($_POST['genre']) && isset($_POST['artiste']) 
 } else {
     print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
     formulaire_upload($db_host, $db_name, $db_user, $db_password);
+    echo   '</body>
+      </html>';
 }
 
  ?>
