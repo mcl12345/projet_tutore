@@ -61,10 +61,11 @@ foreach ($morceau as $genre => $value) {
 
     for ($i=0; $i < sizeof($value); $i++) {
 
+        if($value[$i]['extension'] == ".webm") { echo "video : " ;}
+        if($value[$i]['extension'] == ".ogg") { echo "audio : " ;}
         echo "<a href='player.php?id=".$value[$i]['identifiant']."'>" . $value[$i]['titre'] . "</a><br />";
-        echo $value[$i]['extension']; echo "<br />";
-        echo $value[$i]['duree']; echo "<br />";
-        echo $value[$i]['date_de_parution']; echo "<br />";
+        echo $value[$i]['duree'];
+        echo $value[$i]['date_de_parution'];
     }
     echo "<br />";
 }

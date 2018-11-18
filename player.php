@@ -61,10 +61,17 @@ echo "<div class='row'>
             <div class='container'>";
 
 echo "<h3>".$morceau["titre"]."</h3>";
-echo '<audio controls="controls">
-  <source src="upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="audio/ogg" />
-  Votre navigateur n\'est pas compatible
-</audio><br /><br />';
+if($morceau["extension"] == ".ogg") {
+    echo '<audio controls="controls">
+      <source src="upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="audio/ogg" />
+      Votre navigateur n\'est pas compatible
+    </audio><br /><br />';
+} else if($morceau["extension"] == ".webm") {
+  echo '<video width="400" height="222" controls="controls">
+    <source src="upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="video/webm" />
+    Ici l\'alternative à la vidéo : upload_musiques/'.$morceau["file_name"].$morceau["extension"].'"
+  </video>';
+}
 
 // ----------------------------------
 // Affichage du like et du favoris
