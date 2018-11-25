@@ -59,22 +59,6 @@ if(isset($_POST["commentaire"])) {
     $stmt_->bindParam(':id_user', $id_user);
     $stmt_->bindParam(':texte', $texte);
     $stmt_->execute();
-} else if(isset($_POST["aimer"])) {
-    $stmt_ = $pdo->prepare("INSERT INTO aimer (id_morceau, id_user)  VALUES ( :id_morceau, :id_user)");
-    $stmt_->bindParam(':id_morceau', $id_morceau);
-    $stmt_->bindParam(':id_user', $id_user);
-    $stmt_->execute();
-} else if(isset($_POST["favoris"])) {
-    $stmt_ = $pdo->prepare("INSERT INTO favoris (id_morceau, id_user)  VALUES ( :id_morceau, :id_user)");
-    $stmt_->bindParam(':id_morceau', $id_morceau);
-    $stmt_->bindParam(':id_user', $id_user);
-    $stmt_->execute();
-} else if(isset($_POST["supprimer_aimer"])) {
-    $stmt_ = $pdo->prepare("DELETE FROM aimer WHERE id_morceau = ? AND id_user = ?");
-    $stmt_->execute(array($id_morceau, $id_user));
-} else if(isset($_POST["supprimer_favoris"])) {
-    $stmt_ = $pdo->prepare("DELETE FROM favoris WHERE id_morceau = ? AND id_user = ?");
-    $stmt_->execute(array($id_morceau, $id_user));
 } else {
     // Ajoute une ligne à l'historique
     $stmt_ = $pdo->prepare("INSERT INTO historique (id_user, id_morceau)  VALUES ( :id_user, :id_morceau)");
@@ -120,35 +104,32 @@ $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM aimer WHERE id_morceau = ? AND id_user= ?");
 $stmt->execute(array($_GET["id"], $_COOKIE["the_id"]));
 $row = $stmt->fetch();
-if ($row != null) {
-  echo "<div class='row'>
-  <form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline'>
+echo "<div>";
+if ($row != null || $row == "") {
+  /*echo "<form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline'>
   <input type='hidden' name='supprimer_aimer' value='1' />
-  <input value='Jaime déjà' type='submit'/>
-  </form>";
+  <input value='Jaime déjà' onclick='jaime(myFunction)' type='submit'/>
+  </form>";*/
+
+  echo '<div id="demo">
+  <button type="button" onclick="jaime(myFunction)">Jaime</button>
+  </div>';
 }
 else {
-  echo "<div class='row'>
+  /*echo "
         <form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline'>
         <input type='hidden' name='aimer' value='1' />
-        <input value='Jaime' type='submit'/>
-        </form>";
+        <input value='Jaime' onclick='jaime(myFunction)' type='submit'/>
+        </form>";*/
+        echo '<div id="demo">
+        <button type="button" onclick="jaimePas(myFunction)">Jaime déjà</button>
+        </div>';
 }
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
-$stmt = $pdo->prepare("SELECT * FROM favoris WHERE id_morceau = ? AND id_user= ?");
-$stmt->execute(array($_GET["id"], $_COOKIE["the_id"]));
-$row = $stmt->fetch();
-if ($row != null) {
-  echo "<form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline' >
-  <input type='hidden' name='supprimer_favoris' value='1' />
-  <input value='Mis en favoris' type='submit'/>
-  </form><br /><br />";
-} else {
-    echo "<form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline' >
-    <input type='hidden' name='favoris' value='1' />
-    <input value='Mettre en favoris' type='submit'/>
-    </form><br /><br />";
-}
+
+echo "</div><br /><br />";
+
+
+
 
 // -------------------------------------
 // Affichage des commentaires :
@@ -178,7 +159,7 @@ for ($i=0; $i < sizeof($commentaire) ; $i++) {
 }
 
 echo "<br /><br />
-<form action='player.php?id=".$_GET['id']."' method='post'>
+<form action='player.php?id=".$_GET['id']."' method='post' >
     <label for='commentaire'>Commentaire : </label><br /><textarea id='commentaire' name='commentaire' placeholder='Exprimez-vous ici'></textarea>
     <input type='submit' value='Envoyer' />
     </form>";
@@ -187,6 +168,44 @@ if($_COOKIE["the_role"] == "administrateur") {
   echo "<a href=moderation.php?id=".$id_morceau.">Modérer</a>";
 }
 
-echo '</div></div></div></body></html>';
+echo '</div></div></div>
+
+<script>
+    function jaime(cFunction) {
+      var xhttp;
+      xhttp=new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          cFunction(this);
+        }
+      };
+      xhttp.open("GET", "add_jaime.php?id_user='.$_COOKIE["the_id"].'&id_morceau='.$_GET["id"].'", true);
+      xhttp.send();
+    }
+    function myFunction(xhttp) {
+      document.getElementById("demo").innerHTML =
+      xhttp.responseText;
+    }
+
+    // ---------------------------------
+    // JAIME PAS
+    function jaimePas(cFunction) {
+      var xhttp;
+      xhttp=new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          cFunction(this);
+        }
+      };
+      xhttp.open("GET", "remove_jaime.php?id_user='.$_COOKIE["the_id"].'&id_morceau='.$_GET["id"].'", true);
+      xhttp.send();
+    }
+    function myFunction(xhttp) {
+      document.getElementById("demo").innerHTML =
+      xhttp.responseText;
+    }
+</script>
+
+</body></html>';
 
 ?>
