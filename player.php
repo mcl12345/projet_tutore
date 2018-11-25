@@ -105,14 +105,13 @@ $stmt = $pdo->prepare("SELECT * FROM aimer WHERE id_morceau = ? AND id_user= ?")
 $stmt->execute(array($_GET["id"], $_COOKIE["the_id"]));
 $row = $stmt->fetch();
 echo "<div>";
-if ($row != null || $row == "") {
+if ($row != null) {
   /*echo "<form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline'>
   <input type='hidden' name='supprimer_aimer' value='1' />
   <input value='Jaime déjà' onclick='jaime(myFunction)' type='submit'/>
   </form>";*/
-
   echo '<div id="demo">
-  <button type="button" onclick="jaime(myFunction)">Jaime</button>
+  <button type="button" onclick="jaimePas(myFunction)">Jaime déjà</button>
   </div>';
 }
 else {
@@ -122,14 +121,11 @@ else {
         <input value='Jaime' onclick='jaime(myFunction)' type='submit'/>
         </form>";*/
         echo '<div id="demo">
-        <button type="button" onclick="jaimePas(myFunction)">Jaime déjà</button>
+        <button type="button" onclick="jaime(myFunction)">Jaime</button>
         </div>';
 }
 
 echo "</div><br /><br />";
-
-
-
 
 // -------------------------------------
 // Affichage des commentaires :
@@ -158,18 +154,47 @@ for ($i=0; $i < sizeof($commentaire) ; $i++) {
     echo $commentaire[$i]["date"] . " - <strong>" . $commentaire[$i]["auteur"] . "</strong> : " . $commentaire[$i]["texte"] . "<br />";
 }
 
+// Traitement en AJAX
+echo '<div id="nouveau_commentaire"></div>';
+
 echo "<br /><br />
 <form action='player.php?id=".$_GET['id']."' method='post' >
     <label for='commentaire'>Commentaire : </label><br /><textarea id='commentaire' name='commentaire' placeholder='Exprimez-vous ici'></textarea>
-    <input type='submit' value='Envoyer' />
+<button type='button' onclick='add_commentaire(myFunction2); return false;'>Add commentaire</button>
     </form>";
 
 if($_COOKIE["the_role"] == "administrateur") {
   echo "<a href=moderation.php?id=".$id_morceau.">Modérer</a>";
 }
 
-echo '</div></div></div>
+echo '</div></div></div>';
 
+echo '<script>
+      function add_commentaire(cFunction) {
+        var mon_commentaire = document.getElementById("commentaire").value;
+
+        var xhttp;
+        xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            cFunction(this);
+          }
+        };
+        xhttp.open("GET", "add_commentaire.php?id_morceau='.$_GET["id"].'&texte=" + mon_commentaire, true);
+        xhttp.send();
+      }
+      function myFunction2(xhttp) {
+        if(document.getElementById("nouveau_commentaire").innerHTML != "") {
+          document.getElementById("nouveau_commentaire").innerHTML = document.getElementById("nouveau_commentaire").innerHTML + "<br />" + xhttp.responseText;
+        } else {
+          document.getElementById("nouveau_commentaire").innerHTML = xhttp.responseText;
+        }
+        document.getElementById("commentaire").value = "";
+      }
+
+</script>';
+
+echo '<!-- Script JavaScript pour le bouton J\'aime -->
 <script>
     function jaime(cFunction) {
       var xhttp;

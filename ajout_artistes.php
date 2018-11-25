@@ -7,6 +7,8 @@ include("logo_search_menu2.php");
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
 function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
+if($_COOKIE["the_role"] == "administrateur") {
+
     echo "<div class='row'>
         <div class='col-lg-4'></div>
         <div class='col-lg-4'>
@@ -34,6 +36,7 @@ function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
           </div>
           </div>
         </div>";
+    }
 }
 
 if( isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["pseudonyme"]) && isset($_POST["age"]) && isset($_POST["genre"])) {

@@ -20,6 +20,7 @@ $stmt->execute(array($_COOKIE["the_id"]));
 while ($row = $stmt->fetch()) {
     $morceau_id = $row['id_morceau'];
 
+    // Récupère le morceau sur lequel on va rechercher le genre et puis afficher tous les morceaux de ce genre
     $stmt_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
     $stmt_->execute(array($morceau_id));
     while ($ligne = $stmt_->fetch()) {

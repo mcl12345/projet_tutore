@@ -71,6 +71,8 @@ if($_COOKIE["the_role"] == "administrateur") {
         <input type='submit' value='Envoyer' />
         </form>";
 
+        echo "<a href='player.php?id=".$_GET['id']."'>Revenir au lecteur</a>";
+
     echo '</div></div></div>';
 
 }

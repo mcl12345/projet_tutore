@@ -29,7 +29,6 @@ while ($row = $stmt->fetch()) {
     $stmt_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
     $stmt_->execute(array($morceau_id));
     while ($ligne = $stmt_->fetch()) {
-
         echo $row['date'] . " : <a href='player.php?id=".$morceau_id."'>" . $ligne["titre"] . "</a><br />";
     }
 }

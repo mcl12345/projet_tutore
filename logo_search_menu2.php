@@ -43,33 +43,32 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
    }
    echo '<a href="index.php">Accueil</a>
    </li>';
-   if(basename($_SERVER['PHP_SELF']) == "liste_likes.php")  {
-     echo '<li class="active">';
-   } else {
-     echo '<li>';
-   }
-   echo '<a href="liste_likes.php">Liste des likés</a>
-   </li>';
-   if(basename($_SERVER['PHP_SELF']) == "liste_favoris.php")  {
-     echo '<li class="active">';
-   } else {
-     echo '<li>';
-   }
-   echo '<a href="liste_favoris.php">Liste des favoris</a>
-   </li>';
-   if(basename($_SERVER['PHP_SELF']) == "liste_recente.php")  {
-     echo '<li class="active">';
-   } else {
-     echo '<li>';
-   }
-   echo '<a href="liste_recente.php">Liste récente</a>
-   </li>';
-   if(basename($_SERVER['PHP_SELF']) == "liste_genre.php")  {
-     echo '<li class="active">';
-   } else {
-     echo '<li>';
-   }
-   echo '<a href="liste_genre.php">Liste par genre</a>
+   echo '<li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Listes
+         <span class="caret"></span></a>
+         <ul class="dropdown-menu">';
+             if(basename($_SERVER['PHP_SELF']) == "liste_likes.php")  {
+               echo '<li class="active">';
+             } else {
+               echo '<li>';
+             }
+             echo '<a href="liste_likes.php">Liste des likés</a>
+             </li>';
+             if(basename($_SERVER['PHP_SELF']) == "liste_recente.php")  {
+               echo '<li class="active">';
+             } else {
+               echo '<li>';
+             }
+             echo '<a href="liste_recente.php">Liste récente</a>
+             </li>';
+             if(basename($_SERVER['PHP_SELF']) == "liste_genre.php")  {
+               echo '<li class="active">';
+             } else {
+               echo '<li>';
+             }
+             echo '<a href="liste_genre.php">Liste par genre</a>
+             </li>';
+   echo '</ul>
    </li>';
    if(basename($_SERVER['PHP_SELF']) == "about.php")  {
      echo '<li class="active">';
@@ -119,6 +118,14 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
     </li>';
 
    echo '</ul>
+
+    <form class="navbar-form navbar-left" action="search.php" method="post">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Rechercher" name="search" />
+      </div>
+      <button type="submit" class="btn btn-default">Rechercher</button>
+    </form>
+
    <ul class="nav navbar-nav navbar-right">';
 
    if($_COOKIE["the_username"]) {
