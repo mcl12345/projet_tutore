@@ -17,7 +17,11 @@ echo "<div class='row'>
         <div class='col-lg-4'>
             <div class='container'>";
 
-echo "<h3>Vidéos vues récemment</h3><br />";
+if(isset($_COOKIE["the_username"])) {
+    echo "<h3>Musiques écoutées récemment</h3><br />";
+} else {
+    echo "<br /><br />Veuillez-vous vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
+}
 
 // Va chercher l'historique
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
@@ -33,9 +37,11 @@ while ($row = $stmt->fetch()) {
     }
 }
 
-echo "<br /><form action='liste_recente.php' method='post'>
-<input type='hidden' name='id_user' value='".$_GET["the_id"]."' />
-<input type='submit' value='Nettoyer l historique' /></form>";
+if(isset($_COOKIE["the_username"])) {
+    echo "<br /><form action='liste_recente.php' method='post'>
+    <input type='hidden' name='id_user' value='".$_GET["the_id"]."' />
+    <input type='submit' value='Nettoyer l historique' /></form>";
+}
 
 echo "</div></div></div>";
 

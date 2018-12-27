@@ -52,15 +52,17 @@ for ($i=0; $i < sizeof($genre); $i++) {
 // ---------------------------------------------------------------------
 // Partie Affichage
 // ---------------------------------------------------------------------
-echo "<div class='row'>
-        <div class='col-lg-4'></div>
-        <div class='col-lg-4'>
-            <div class='container'>";
+
+$j = 0;
 foreach ($morceau as $genre => $value) {
-    echo "<h3>" . $genre . " : </h3>";
+  if($j == 0 || $j == 3 || $j == 6) {
+    echo "<div class='row' style='margin-left:25px;'>";
+  }
+      echo "<div class='col-lg-4'>";
+          //echo "<div class='container'>";
+              echo "<h3>" . $genre . " : </h3>";
 
     for ($i=0; $i < sizeof($value); $i++) {
-
         if($value[$i]['extension'] == ".webm") { echo "video : " ;}
         if($value[$i]['extension'] == ".ogg") { echo "audio : " ;}
         echo "<a href='player.php?id=".$value[$i]['identifiant']."'>" . $value[$i]['titre'] . "</a><br />";
@@ -68,8 +70,15 @@ foreach ($morceau as $genre => $value) {
         echo $value[$i]['date_de_parution'];
     }
     echo "<br />";
+    //echo "</div><!-- fin container -->";
+    echo "</div><!-- fin class col lg 4 -->";
+    if($j == 2 || $j == 5 || $j == 8) {
+        echo "</div><!-- fin row -->";
+    }
+
+    $j++;
 }
 
-echo '</div></div></div></body></html>';
+echo '</body></html>';
 
 ?>

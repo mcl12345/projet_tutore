@@ -7,9 +7,11 @@ if (isset($_COOKIE["the_username"])) {
     unset($_COOKIE["the_username"]); // cela ne semble pas fonctionner
     unset($_COOKIE["the_email"]);
     unset($_COOKIE["the_role"]);
+    unset($_COOKIE["the_id"]);
     setcookie("the_username", "", time()-3600); // Mettre une date antérieure le force à se supprimer au prochain chargement de page.
     setcookie("the_email", "", time()-3600);
     setcookie("the_role", "", time()-3600);
+    setcookie("the_id", "", time()-3600);
 
     print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
     echo "<div class='row'>

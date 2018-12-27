@@ -25,7 +25,9 @@ $stmt_->execute(array($row["id_user"]));
 while ($ligne = $stmt_->fetch()) {
     $auteur = $ligne["username"];
 }
-echo $row["date"] . " : <strong>" . $auteur . "</strong> : " . $row["texte"];
+if($id_user != null) {
+    echo $row["date"] . " : <strong>" . $auteur . "</strong> : " . $row["texte"];
+}
 
 
 ?>

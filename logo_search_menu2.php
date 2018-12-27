@@ -24,6 +24,8 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
     <meta name="description" content="Plateforme musicale">
     <meta name="keywords" content="musique">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="alternate" href="flux_rss.php" title="My RSS feed" type="application/rss+xml" />
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -52,14 +54,14 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
              } else {
                echo '<li>';
              }
-             echo '<a href="liste_likes.php">Liste des likés</a>
+             echo '<a href="liste_likes.php">Liste des morceaux aimés</a>
              </li>';
              if(basename($_SERVER['PHP_SELF']) == "liste_recente.php")  {
                echo '<li class="active">';
              } else {
                echo '<li>';
              }
-             echo '<a href="liste_recente.php">Liste récente</a>
+             echo '<a href="liste_recente.php">Liste de morceau(x) écouté(s) récemment</a>
              </li>';
              if(basename($_SERVER['PHP_SELF']) == "liste_genre.php")  {
                echo '<li class="active">';
@@ -77,17 +79,24 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
    }
    echo '<a href="about.php">About</a>
    </li>';
+   if(basename($_SERVER['PHP_SELF']) == "flux_rss.php")  {
+     echo '<li class="active">';
+   } else {
+     echo '<li>';
+   }
+   echo '<a href="flux_rss.php">RSS</a>
+   </li>';
    if($bool_verification_role) {
       echo '<li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin
             <span class="caret"></span></a>
             <ul class="dropdown-menu">';
-            if(basename($_SERVER['PHP_SELF']) == "upload.php")  {
+            if(basename($_SERVER['PHP_SELF']) == "upload_morceau.php")  {
               echo '<li class="active">';
             } else {
               echo '<li>';
             }
-            echo '<a href="upload.php">Admin : Upload</a>
+            echo '<a href="upload_morceau.php">Admin : Upload d\'un morceau</a>
            </li>';
 
            if(basename($_SERVER['PHP_SELF']) == "ajout_artistes.php")  {
@@ -96,6 +105,14 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
              echo '<li>';
            }
            echo '<a href="ajout_artistes.php">Admin : Ajout artistes</a>
+           </li>';
+
+           if(basename($_SERVER['PHP_SELF']) == "selectionner_artiste_a_modifier.php")  {
+             echo '<li class="active">';
+           } else {
+             echo '<li>';
+           }
+           echo '<a href="selectionner_artiste_a_modifier.php">Admin : Modifier artistes</a>
            </li>';
 
            if(basename($_SERVER['PHP_SELF']) == "add_artiste_to_morceau1.php")  {
@@ -113,6 +130,14 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
            }
            echo '<a href="add_genre_to_morceau1.php">Admin : Ajout des genres au morceau</a>
            </li>';
+
+           if(basename($_SERVER['PHP_SELF']) == "delete_morceau.php")  {
+             echo '<li class="active">';
+           } else {
+             echo '<li>';
+           }
+           echo '<a href="delete_morceau.php">Admin : Suppression d\'un morceau</a>
+           </li>';
    }
     echo '</ul>
     </li>';
@@ -129,28 +154,31 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
    <ul class="nav navbar-nav navbar-right">';
 
    if($_COOKIE["the_username"]) {
+     if(basename($_SERVER['PHP_SELF']) == "profil.php")  {
+       echo '<li class="active">';
+     } else {
+       echo '<li>';
+     }
+     echo '<a href="profil.php"><span class="glyphicon glyphicon-user"></span> Profil</a></li>';
      if(basename($_SERVER['PHP_SELF']) == "logout.php")  {
        echo '<li class="active">';
      } else {
        echo '<li>';
      }
-     echo '<a href="logout.php">Log out</a>
-             </li>';
+     echo '<a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>';
    } else {
        if(basename($_SERVER['PHP_SELF']) == "register.php")  {
          echo '<li class="active">';
        } else {
          echo '<li>';
        }
-       echo '<a href="register.php"><span class="glyphicon glyphicon-user"></span> Enregistrement</a>
-             </li>';
+       echo '<a href="register.php"><span class="glyphicon glyphicon-user"></span> Enregistrement</a></li>';
       if(basename($_SERVER['PHP_SELF']) == "login.php")  {
          echo '<li class="active">';
       } else {
          echo '<li>';
       }
-      echo '<a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Se connecter</a>
-             </li>';
+      echo '<a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Se connecter</a></li>';
    }
      echo '
      <li></li>

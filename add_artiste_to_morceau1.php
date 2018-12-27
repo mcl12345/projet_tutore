@@ -42,7 +42,7 @@ echo "</form>";
 echo   '</div>
   </div>
 </div>
-</body></body>
+</body>
   </html>';
 
 ?>

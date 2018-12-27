@@ -8,17 +8,30 @@ print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
 
 // Va chercher le morceau à écouter
+$morceau_present = false;
 $morceau = array();
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
 $stmt->execute(array($_GET["id"]));
 while ($row = $stmt->fetch()) {
+    $morceau_present = true;
     $morceau["file_name"] = $row["file_name"];
     $morceau["extension"] = $row["extension"];
     $morceau["titre"]     = $row["titre"];
+    $morceau["imageURL"]  = $row["imageURL"];
+    $morceau["description"]  = $row["description"];
 }
 
-// Recherche des artistes
+if(!$morceau_present) {
+  echo "<div class='row'>
+          <div class='col-lg-4'></div>
+          <div class='col-lg-4'>
+              <div class='container'>";
+    echo "Aucun morceau disponible !</div></div></div></body></html>";
+    exit(0);
+}
+
+// Va chercher les artistes du morceau
 $artistes = array();
 $stmt = $pdo->prepare("SELECT * FROM artiste_morceau WHERE id_morceau = ?");
 $stmt->execute(array($_GET["id"]));
@@ -32,7 +45,7 @@ while ($row = $stmt->fetch()) {
     $i++;
 }
 
-// Recherche des genres
+// Va chercher les genres du morceau
 $genres = array();
 $stmt = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_morceau = ?");
 $stmt->execute(array($_GET["id"]));
@@ -67,14 +80,21 @@ if(isset($_POST["commentaire"])) {
     $stmt_->execute();
 }
 
+// -------------------------------
 // Affichage
 // -------------------------------
-echo "<div class='row'>
+/*echo "<div class='row'>
         <div class='col-lg-4'></div>
         <div class='col-lg-4'>
-            <div class='container'>";
+            <div class='container'>";*/
+echo "<div class='container'>
+			<div class='row'>
+				<div class='col-md-4 col-md-offset-4'>";
 
-echo "<h3>".$morceau["titre"]."</h3>";
+echo "<h3>".$morceau["titre"]."</h3><br />";
+if($morceau["imageURL"] != null && $morceau["extension"] == ".ogg") {
+  echo "<img src='upload_images/".$morceau["imageURL"]."' width='270px' height='170px' /><br />";
+}
 if($morceau["extension"] == ".ogg") {
     echo '<audio controls="controls">
       <source src="upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="audio/ogg" />
@@ -86,16 +106,17 @@ if($morceau["extension"] == ".ogg") {
     Ici l\'alternative à la vidéo : upload_musiques/'.$morceau["file_name"].$morceau["extension"].'"
   </video>';
 }
-echo "<br /><br />Artistes : ";
+echo "<br /><br /><strong>Artistes : </strong>";
 for($i=0; $i<sizeof($artistes); $i++) {
     echo $artistes[$i] . " ";
 }
 echo "<br /><br />";
-echo "Genres : ";
+echo "<strong>Genres : </strong>";
 for($i=0; $i<sizeof($genres); $i++) {
     echo $genres[$i] . " ";
 }
 echo "<br /><br />";
+echo "<strong>Description : </strong>".$morceau["description"] . "<br /><br />";
 
 // ----------------------------------
 // Affichage du like et du favoris
@@ -174,7 +195,13 @@ echo '<script>
         var mon_commentaire = document.getElementById("commentaire").value;
 
         var xhttp;
-        xhttp=new XMLHttpRequest();
+        if (window.XMLHttpRequest) {
+            // code for modern browsers
+            xhttp = new XMLHttpRequest();
+         } else {
+            // code for old IE browsers
+            xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             cFunction(this);

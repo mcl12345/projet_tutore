@@ -7,11 +7,11 @@ function formulaire_login_HTML() {
     echo "<div class='row'>
             <div class='col-lg-4'></div>
             <div class='col-lg-4'>
-              <div class='container'>
+              <div class='container'><br /><br /><br /><br /><br /><br /><br />
                 <form method='post' action='login.php'>
                   <label class='label_formulaire' for='username'>Username : </label><input id='username' name='username' type='text' required /><br />
-                  <label class='label_formulaire' for='plain_password'>Password : </label><input id='plain_password' name='plain_password' id='plain_password' type='password' required /><br />
-                  <input type='submit' value='Connexion' />
+                  <label class='label_formulaire' for='plain_password'>Password : </label><input id='plain_password' name='plain_password' id='plain_password' type='password' required /><br /><br />
+                  <input type='submit' style='margin-left:100px;' value='Connexion' />
                 </form>
               </div>
             </div>
@@ -57,13 +57,17 @@ if( !empty($_POST["username"]) &&
           setcookie("the_password_encoded", $my_password_encoded);
           setcookie("the_role", $my_role);
 
-          print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
+          /* Une erreur se produira si il y a une sortie au dessus, qui se trouve avant l'appel à la fonction header() */
+          header('Location: login.php');
+          /*print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
           echo "<div class='row'>
                   <div class='col-lg-4'></div>
                   <div class='col-lg-4'>
                     <div class='container'>Vous êtes bien authentifié en tant que " . $my_username . " !";
           echo   '</div></div></div></body>
               </html>';
+              */
+
       } else {
             print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
             echo "Mauvais password<br />";
@@ -76,7 +80,9 @@ else if (isset($_COOKIE['the_username'])) {
     print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
     echo "<div class='row'>
             <div class='col-lg-4'></div>
-            <div class='col-lg-4'><div class='container'>Bienvenue " . $_COOKIE["the_username"] . " !</div>";
+            <div class='col-lg-4'><div class='container'>Bienvenue " . $_COOKIE["the_username"] . " !<br />
+            
+            </div>";
     echo   '</div></div></body>
       </html>';
 } else {

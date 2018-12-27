@@ -22,6 +22,7 @@ if ( isset($_POST["search"])) {
   }
 
   // Va chercher les morceaux ayant pour artiste ce pseudonyme
+  $is_into = false;
   $stmt = $pdo->prepare("SELECT * FROM artiste WHERE pseudonyme = ?");
   $stmt->execute(array($search));
   while ($ligne = $stmt->fetch()) {
@@ -30,7 +31,12 @@ if ( isset($_POST["search"])) {
       while ($_ligne = $_stmt->fetch()) {
           $_stmt_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
           $_stmt_->execute(array($_ligne["id_morceau"]));
+
           while ($_ligne_ = $_stmt_->fetch()) {
+              if(!$is_into) {
+                  echo "Voici les morceaux pour la recherche <strong>" . $search . "</strong> : <br /><br />";
+                  $is_into = true;
+              }
             echo "<a href='player.php?id=".$_ligne_["id"]."'>" . $_ligne_["titre"] . "</a><br />";
           }
       }
