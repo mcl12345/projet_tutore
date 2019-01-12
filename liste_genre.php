@@ -13,9 +13,13 @@ $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM genre");
 $stmt->execute();
 while ($row = $stmt->fetch()) {
-    $genre[$i]["nom"] = $row['nom'];
-    $genre[$i]["id"] = $row['id'];
-    $i++;
+    if($row['id'] == 999) {
+      // on ne fait rien
+    } else {
+        $genre[$i]["nom"] = $row['nom'];
+        $genre[$i]["id"] = $row['id'];
+        $i++;
+    }
 }
 
 

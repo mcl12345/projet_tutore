@@ -159,7 +159,7 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
      } else {
        echo '<li>';
      }
-     echo '<a href="profil.php"><span class="glyphicon glyphicon-user"></span> Profil</a></li>';
+     echo '<a href="profil.php"><span class="glyphicon glyphicon-user"></span> Profil '.$_COOKIE["the_username"].'</a></li>';
      if(basename($_SERVER['PHP_SELF']) == "logout.php")  {
        echo '<li class="active">';
      } else {

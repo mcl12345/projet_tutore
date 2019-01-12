@@ -14,7 +14,7 @@ if(isset($_COOKIE["the_username"])) {
           <div class='col-lg-4'></div>
           <div class='col-lg-4'>
               <div class='container'>";
-    echo "<h3>Recommandations</h3>";
+    echo "<h3>Recommandations</h3><br /><br />";
     echo "</div></div></div>";
 } else {
     echo "";
@@ -56,7 +56,7 @@ if(isset($_COOKIE["the_username"])) {
           <div class='col-lg-4'></div>
           <div class='col-lg-4'>
               <div class='container'>";
-    echo "<br /><br />Veuillez-vous vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
+    echo "<br /><br />Veuillez-vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
     echo "</div></div></div>";
 }
 
@@ -65,10 +65,10 @@ $NB_COLONNES = 3;
 $i = 0;
 $j = 0;
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
-$stmt = $pdo->prepare("SELECT * FROM profil");
-$stmt->execute();
+$stmt = $pdo->prepare("SELECT * FROM profil WHERE id_user = ?");
+$stmt->execute(array($_COOKIE["the_id"]));
+
 while ($row = $stmt->fetch()) {
-    //print_r($row);
     $stmt_ = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_genre = ?");
     $stmt_->execute(array($row["genre_prefere"]));
     while ($row_ = $stmt_->fetch()) {
@@ -95,7 +95,12 @@ while ($row = $stmt->fetch()) {
                   if($_row_["imageURL"] != null || $_row_["imageURL"] != "") {
                     echo "<a target='_blank' href='player.php?id=".$_row_["id"]."'><img width='250' height='150' src='upload_images/".$_row_["imageURL"]."' /></a>";
                   }
-                  echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$_row_["id"]."'>" . substr($_row_["titre"],0, 30) . "...</a></strong><br />";
+                  // Si la taille du titre est supérieur à 30 caractère on coupe le titre et on met 3 points.
+                  if(strlen($_row_["titre"]) > 30) {
+                      echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$_row_["id"]."'>" . substr($_row_["titre"], 0, 30) . "...</a></strong><br />";
+                  } else {
+                      echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$_row_["id"]."'>" . substr($_row_["titre"], 0, 30) . "</a></strong><br />";
+                  }
                   echo "</div><!-- fin class col lg 4 -->";
                   if($j == $i*$NB_COLONNES-1 && $j >= 2) {
                         $i++;
@@ -151,7 +156,12 @@ while ($row = $stmt->fetch()) {
                         if($__ligne_["imageURL"] != null || $__ligne_["imageURL"] != "") {
                             echo "<a target='_blank' href='player.php?id=".$__ligne_["id"]."'><img width='250' height='150' src='upload_images/".$__ligne_["imageURL"]."' /></a>";
                         }
-                        echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"],0, 30) . "...</a></strong><br />";
+                        // Si la taille du titre est supérieur à 30 caractère on coupe le titre et on met 3 points.
+                        if(strlen($__ligne_["titre"]) > 30) {
+                            echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"], 0, 30) . "...</a></strong><br />";
+                        } else {
+                            echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"], 0, 30) . "</a></strong><br />";
+                        }
                         echo "</div><!-- fin class col lg 4 -->";
                         if($j == $i*$NB_COLONNES-1 && $j >= 2) {
                             $i++;

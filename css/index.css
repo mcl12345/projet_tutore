@@ -6,3 +6,12 @@
 .label_formulaire {
     width: 200px;
 }
+
+.titre_musique {
+  margin-top: -20px;
+}
+
+.image_musique {
+  display: inline;
+  margin-top: 150px;
+}

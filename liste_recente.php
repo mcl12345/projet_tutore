@@ -19,6 +19,11 @@ echo "<div class='row'>
 
 if(isset($_COOKIE["the_username"])) {
     echo "<h3>Musiques écoutées récemment</h3><br />";
+
+    echo "<br /><form action='liste_recente.php' method='post'>
+      <input type='hidden' name='id_user' value='".$_GET["the_id"]."' />
+      <input type='submit' value='Nettoyer l historique' /></form><br />";
+
 } else {
     echo "<br /><br />Veuillez-vous vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
 }
@@ -35,12 +40,6 @@ while ($row = $stmt->fetch()) {
     while ($ligne = $stmt_->fetch()) {
         echo $row['date'] . " : <a href='player.php?id=".$morceau_id."'>" . $ligne["titre"] . "</a><br />";
     }
-}
-
-if(isset($_COOKIE["the_username"])) {
-    echo "<br /><form action='liste_recente.php' method='post'>
-    <input type='hidden' name='id_user' value='".$_GET["the_id"]."' />
-    <input type='submit' value='Nettoyer l historique' /></form>";
 }
 
 echo "</div></div></div>";

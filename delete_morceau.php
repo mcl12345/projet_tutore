@@ -14,8 +14,8 @@ if( isset($_POST["id_morceau"]) ) {
     $stmt = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
     $stmt->execute(array($_POST["id_morceau"]));
     while($row = $stmt->fetch()) {
-        $chemin_musique = $row["file_name"] . $row["extension"];
-        $chemin_image = $row["imageURL"];
+        $chemin_musique = "upload_musiques/" . $row["file_name"] . $row["extension"];
+        $chemin_image = "upload_images/" . $row["imageURL"];
         unlink($chemin_musique);
 
         if($chemin_image != null || $chemin_image != "") {
@@ -23,13 +23,15 @@ if( isset($_POST["id_morceau"]) ) {
         }
     }
 
+    $stmt = $pdo->prepare("DELETE FROM aimer WHERE id_morceau = ? ");
+    $stmt->execute(array($_POST["id_morceau"]));
+
     // Suppression de la musique
     $stmt = $pdo->prepare("DELETE FROM morceau WHERE id = ?");
     $stmt->execute(array($_POST["id_morceau"]));
 
     $stmt = $pdo->prepare("DELETE FROM commentaire WHERE id_morceau = ?");
     $stmt->execute(array($_POST["id_morceau"]));
-
 }
 
 echo "<div class='row'>
@@ -45,11 +47,13 @@ $stmt = $pdo->prepare("SELECT * FROM morceau");
 $stmt->execute();
 echo '<form action="delete_morceau.php" method="post">';
 while ($row = $stmt->fetch()) {
-    echo "<input type='radio' id='id_morceau' name='id_morceau' value='".$row["id"]."' />";
+    echo "<input type='radio' id='id_morceau' name='id_morceau' value='".$row["id"]."' />
+          &nbsp;&nbsp;&nbsp;";
     if($row["imageURL"] != null || $row["imageURL"] != "") {
         echo "<img width='50' height='50' src='upload_images/".$row["imageURL"]."' />";
     }
-    echo "<a href='player.php?id=".$row["id"]."'>" . $row["titre"] . "</a><br />";
+    echo "&nbsp;&nbsp;&nbsp;
+          <a href='player.php?id=".$row["id"]."'>" . $row["titre"] . "</a><br />";
 }
 echo "<br /><input value='Supprimer' type='submit' />";
 echo "</form><br />";

@@ -9,7 +9,7 @@ print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 echo "<div class='row'>
         <div class='col-lg-4'></div>
         <div class='col-lg-4'>
-            <div class='container'>";
+            <!--<div class='container'>-->";
 
 
 if(isset($_COOKIE["the_username"])) {
@@ -31,18 +31,19 @@ while ($row = $stmt->fetch()) {
     $stmt_->execute(array($morceau_id));
     while ($ligne = $stmt_->fetch()) {
         if($ligne["imageURL"] != null || $ligne["imageURL"] != "") {
-            echo "<img width='250' height='150' src='upload_images/".$ligne["imageURL"]."' />&nbsp;";
+            echo "<div class='image_musique'><img width='250' height='150' src='upload_images/".$ligne["imageURL"]."' /></div>&nbsp;";
         }
+        echo "<span class='titre_musique'>";
         if($ligne['extension'] == ".webm") { echo "video : " ;}
         if($ligne['extension'] == ".ogg") { echo "audio : " ;}
-        echo "<strong><a href='player.php?id=".$morceau_id."'>" . $ligne["titre"] . "</a></strong><br />";
+        echo "<strong><a href='player.php?id=".$morceau_id."'>" . $ligne["titre"] . "</a></strong></span><br />";
     }
 }
-if(!$is_likes = false) {
-    echo "Vous n'avais aimer aucune musique pour le moment.";
+if(!$is_likes) {
+    echo "Vous n'avez aimé aucune musique pour le moment.";
 }
 
-echo "</div></div></div>";
+echo "</div></div>";
 
 echo '</body></html>';
 

@@ -19,8 +19,8 @@ function formulaire_HTML($db_host, $db_name, $db_user, $db_password) {
     $stmt = $pdo->query("SELECT * FROM genre");
     while ($row = $stmt->fetch()) {
       $id = 0;
-      $stmt_ = $pdo->prepare("SELECT * FROM profil");
-      $stmt_->execute();
+      $stmt_ = $pdo->prepare("SELECT * FROM profil WHERE id_user = ?");
+      $stmt_->execute(array($_COOKIE["the_id"]));
       while($ligne = $stmt_->fetch()) {
           if($ligne["genre_prefere"] == $row["id"]) {
               $id = $ligne["genre_prefere"];
@@ -31,7 +31,6 @@ function formulaire_HTML($db_host, $db_name, $db_user, $db_password) {
           echo "<option value='".$row['id']."'>".$row['nom']."</option>";
       }
     }
-    echo "<option value='999'>Aucun</option>";
     echo "</select>
     <input type='submit' value='Selectionner' /><br />";
     echo "</form>";
@@ -41,18 +40,22 @@ if( !empty($_POST["genre_prefere"])) {
     // Insertion MySQL ou MaJ
     try {
          $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
-         $stmt = $pdo->prepare("SELECT * FROM profil");
-         $stmt->execute();
+         $stmt = $pdo->prepare("SELECT * FROM profil WHERE id_user = ?");
+         $stmt->execute(array($_COOKIE["the_id"]));
+
          $is_created = false;
          while($row = $stmt->fetch()) {
             $is_created = true;
+            echo $_POST["genre_prefere"];
+            echo $_COOKIE["the_id"];
             // set the PDO error mode to exception
-            $stmt = $pdo->prepare("UPDATE profil SET genre_prefere = ?");
-            $stmt->execute(array($_POST["genre_prefere"]));
+            $stmt = $pdo->prepare("UPDATE profil SET genre_prefere = ? WHERE id_user = ?");
+            $stmt->execute(array($_POST["genre_prefere"], $_COOKIE["the_id"]));
          }
          if(!$is_created){
-            $stmt = $pdo->prepare("INSERT INTO profil ( genre_prefere ) VALUES (:genre_prefere) ");
+            $stmt = $pdo->prepare("INSERT INTO profil ( genre_prefere, id_user ) VALUES (:genre_prefere, :id_user)");
             $stmt->bindParam(":genre_prefere", $_POST["genre_prefere"]);
+            $stmt->bindParam(":id_user", $_COOKIE["the_id"]);
             $stmt->execute();
          }
 
@@ -75,7 +78,16 @@ if( !empty($_POST["genre_prefere"])) {
 else {
     // Affichage du logo , du formulaire de recherche et du menu
     print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
-    formulaire_HTML($db_host, $db_name, $db_user, $db_password);
+    if(isset($_COOKIE["the_id"])) {
+      formulaire_HTML($db_host, $db_name, $db_user, $db_password);
+    } else {
+      echo "<div class='row'>
+          <div class='col-lg-4'></div>
+          <div class='col-lg-4'>
+            <div class='container'>";
+      echo "Veuillez-vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
+      echo "</div></div></div>";
+    }
     echo '  </body>
       </html>';
 }
