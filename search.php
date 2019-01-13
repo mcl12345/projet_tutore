@@ -15,8 +15,8 @@ if ( isset($_POST["search"])) {
 
   // Va chercher le titre d'un morceau
   $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
-  $stmt = $pdo->prepare("SELECT * FROM morceau WHERE titre = ?");
-  $stmt->execute(array($search));
+  $stmt = $pdo->prepare("SELECT * FROM morceau WHERE titre LIKE '%$search%'");
+  $stmt->execute();
   while ($ligne = $stmt->fetch()) {
       echo "<a href='player.php?id=".$ligne["id"]."'>" . $ligne["titre"] . "</a><br />";
   }
