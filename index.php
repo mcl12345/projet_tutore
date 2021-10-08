@@ -1,15 +1,11 @@
 <?php
 
 include("connection_bdd.php");
-include("logo_search_menu2.php");
+include("logo_search_menu.php");
 
-
-// Lance le script HTML d'affichage
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
-
-
-if(isset($_COOKIE["the_username"])) {
+if(isset($_SESSION["the_username"])) {
   echo "<div class='row'>
           <div class='col-lg-4'></div>
           <div class='col-lg-4'>
@@ -56,7 +52,7 @@ if(isset($_COOKIE["the_username"])) {
           <div class='col-lg-4'></div>
           <div class='col-lg-4'>
               <div class='container'>";
-    echo "<br /><br />Veuillez-vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
+    echo "<br /><br />Veuillez-vous connecter à <a href='login/'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='register/'>S'enregistrer</a>";
     echo "</div></div></div>";
 }
 
@@ -66,7 +62,7 @@ $i = 0;
 $j = 0;
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM profil WHERE id_user = ?");
-$stmt->execute(array($_COOKIE["the_id"]));
+$stmt->execute(array($_SESSION["the_id"]));
 
 while ($row = $stmt->fetch()) {
     $stmt_ = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_genre = ?");
@@ -93,13 +89,15 @@ while ($row = $stmt->fetch()) {
                   if($_row_['extension'] == ".webm") { echo "&nbsp;video : " ;}
                   if($_row_['extension'] == ".ogg") { echo "&nbsp;audio : " ;}
                   if($_row_["imageURL"] != null || $_row_["imageURL"] != "") {
-                    echo "<a target='_blank' href='player.php?id=".$_row_["id"]."'><img width='250' height='150' src='upload_images/".$_row_["imageURL"]."' /></a>";
+                    echo "<a target='_blank' href='player/?id=".$_row_["id"]."'>
+                                <img width='250' height='150' src='upload_images/".$_row_["imageURL"]."' loading='lazy' />
+                        </a>";
                   }
                   // Si la taille du titre est supérieur à 30 caractère on coupe le titre et on met 3 points.
                   if(strlen($_row_["titre"]) > 30) {
-                      echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$_row_["id"]."'>" . substr($_row_["titre"], 0, 30) . "...</a></strong><br />";
+                      echo "&nbsp;<strong><a target='_blank' href='player/?id=".$_row_["id"]."'>" . substr($_row_["titre"], 0, 30) . "...</a></strong><br />";
                   } else {
-                      echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$_row_["id"]."'>" . substr($_row_["titre"], 0, 30) . "</a></strong><br />";
+                      echo "&nbsp;<strong><a target='_blank' href='player/?id=".$_row_["id"]."'>" . substr($_row_["titre"], 0, 30) . "</a></strong><br />";
                   }
                   echo "</div><!-- fin class col lg 4 -->";
                   if($j == $i*$NB_COLONNES-1 && $j >= 2) {
@@ -116,7 +114,7 @@ while ($row = $stmt->fetch()) {
 $j = 0;
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM aimer WHERE id_user = ?");
-$stmt->execute(array($_COOKIE["the_id"]));
+$stmt->execute(array($_SESSION["the_id"]));
 while ($row = $stmt->fetch()) {
     $morceau_id = $row['id_morceau'];
 
@@ -154,13 +152,13 @@ while ($row = $stmt->fetch()) {
                         if($__ligne_['extension'] == ".webm") { echo "&nbsp;video : " ;}
                         if($__ligne_['extension'] == ".ogg") { echo "&nbsp;audio : " ;}
                         if($__ligne_["imageURL"] != null || $__ligne_["imageURL"] != "") {
-                            echo "<a target='_blank' href='player.php?id=".$__ligne_["id"]."'><img width='250' height='150' src='upload_images/".$__ligne_["imageURL"]."' /></a>";
+                            echo "<a target='_blank' href='player/?id=".$__ligne_["id"]."'><img width='250' height='150' src='upload_images/".$__ligne_["imageURL"]."' /></a>";
                         }
                         // Si la taille du titre est supérieur à 30 caractère on coupe le titre et on met 3 points.
                         if(strlen($__ligne_["titre"]) > 30) {
-                            echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"], 0, 30) . "...</a></strong><br />";
+                            echo "&nbsp;<strong><a target='_blank' href='player/?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"], 0, 30) . "...</a></strong><br />";
                         } else {
-                            echo "&nbsp;<strong><a target='_blank' href='player.php?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"], 0, 30) . "</a></strong><br />";
+                            echo "&nbsp;<strong><a target='_blank' href='player/?id=".$__ligne_["id"]."'>" . substr($__ligne_["titre"], 0, 30) . "</a></strong><br />";
                         }
                         echo "</div><!-- fin class col lg 4 -->";
                         if($j == $i*$NB_COLONNES-1 && $j >= 2) {
@@ -180,11 +178,11 @@ if(sizeof($dejaListe) == 0) {
           <div class='col-lg-4'></div>
           <div class='col-lg-4'>
               <div class='container'>";
-    echo "Pour le moment, vous n'avez aucune recommandation par les 'morceaux aimés' ou le <a href='profil.php'>'formulaire de genre préféré'</a>.";
+    echo "Pour le moment, vous n'avez aucune recommandation par les 'morceaux aimés' ou le <a href='profil/'>'formulaire de genre préféré'</a>.";
     echo "</div></div></div>";
 }
 
-if(isset($_COOKIE["the_username"])) {
+if(isset($_SESSION["the_username"])) {
     echo "</div></div></div>";
 }
 
