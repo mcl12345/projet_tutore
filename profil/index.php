@@ -6,8 +6,7 @@ include("../logo_search_menu/index.php");
 function formulaire_HTML($db_host, $db_name, $db_user, $db_password) {
     echo "<div class='row'>
         <div class='col-lg-4'></div>
-        <div class='col-lg-4'>
-          <div class='container'>";
+        <div class='col-lg-4'>";
 
     echo "<form action='./' method='post'>";
     echo "<label for='genre'>Choississez votre genre préféré :</label>
@@ -61,10 +60,9 @@ if( !empty($_POST["genre_prefere"])) {
 
          echo "<div class='row'>
              <div class='col-lg-4'></div>
-             <div class='col-lg-4'>
-               <div class='container'>";
+             <div class='col-lg-4'>";
          echo "Changement effectué avec succès !<br />";
-         echo "</div></div></div>";
+         echo "</div></div>";
          echo '</body>
               </html>';
     }
@@ -81,10 +79,9 @@ else {
     } else {
       echo "<div class='row'>
           <div class='col-lg-4'></div>
-          <div class='col-lg-4'>
-            <div class='container'>";
-      echo "Veuillez-vous connecter à <a href='login.php'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='register.php'>S'enregistrer</a>";
-      echo "</div></div></div>";
+          <div class='col-lg-4'>";
+      echo "Veuillez-vous connecter à <a href='../login/'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='../register/'>S'enregistrer</a>";
+      echo "</div></div>";
     }
     echo '  </body>
       </html>';

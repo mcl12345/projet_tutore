@@ -8,10 +8,9 @@ print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 if(isset($_SESSION["the_username"])) {
   echo "<div class='row'>
           <div class='col-lg-4'></div>
-          <div class='col-lg-4'>
-              <div class='container'>";
+          <div class='col-lg-4'>";
     echo "<h3>Recommandations</h3><br /><br />";
-    echo "</div></div></div>";
+    echo "</div></div>";
 } else {
     echo "";
     echo '<div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -50,10 +49,9 @@ if(isset($_SESSION["the_username"])) {
   </div>';
   echo "<div class='row'>
           <div class='col-lg-4'></div>
-          <div class='col-lg-4'>
-              <div class='container'>";
+          <div class='col-lg-4'>";
     echo "<br /><br />Veuillez-vous connecter à <a href='login/'>Se connecter</a><br />ou vous inscrire, si vous êtes nouveau ici <a href='register/'>S'enregistrer</a>";
-    echo "</div></div></div>";
+    echo "</div></div>";
 }
 
 $dejaListe = array();
@@ -176,10 +174,9 @@ while ($row = $stmt->fetch()) {
 if(sizeof($dejaListe) == 0) {
   echo "<div class='row'>
           <div class='col-lg-4'></div>
-          <div class='col-lg-4'>
-              <div class='container'>";
+          <div class='col-lg-4'>";
     echo "Pour le moment, vous n'avez aucune recommandation par les 'morceaux aimés' ou le <a href='profil/'>'formulaire de genre préféré'</a>.";
-    echo "</div></div></div>";
+    echo "</div></div>";
 }
 
 if(isset($_SESSION["the_username"])) {
