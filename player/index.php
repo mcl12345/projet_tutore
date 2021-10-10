@@ -63,6 +63,7 @@ while ($row = $stmt->fetch()) {
 // --------------------------------------------------
 $id_user = $_SESSION["the_id"];
 $id_morceau = $_GET["id"];
+$date_ = date("Y-m-d h:m:s");
 
 if(isset($_POST["commentaire"])) {
     $texte = $_POST["commentaire"];
@@ -73,9 +74,10 @@ if(isset($_POST["commentaire"])) {
     $stmt_->execute();
 } else {
     // Ajoute une ligne à l'historique
-    $stmt_ = $pdo->prepare("INSERT INTO historique (id_user, id_morceau)  VALUES ( :id_user, :id_morceau)");
+    $stmt_ = $pdo->prepare("INSERT INTO historique (id_user, id_morceau, date_)  VALUES ( :id_user, :id_morceau, :date_)");
     $stmt_->bindParam(':id_user', $id_user);
     $stmt_->bindParam(':id_morceau', $id_morceau);
+    $stmt_->bindParam(':date_', $date_);
     $stmt_->execute();
 }
 
@@ -89,7 +91,7 @@ echo "<div class='container'>
 
 echo "<h3>".$morceau["titre"]."</h3><br />";
 if($morceau["imageURL"] != null && $morceau["extension"] == ".ogg") {
-  echo "<img src='../upload_images/".$morceau["imageURL"]."' width='270px' height='170px' /><br />";
+    echo "<img src='../upload_images/".$morceau["imageURL"]."' width='270px' height='170px' /><br />";
 }
 if($morceau["extension"] == ".ogg") {
     echo '<audio controls="controls">
@@ -97,10 +99,10 @@ if($morceau["extension"] == ".ogg") {
       Votre navigateur n\'est pas compatible
     </audio>';
 } else if($morceau["extension"] == ".webm") {
-  echo '<video width="400" height="222" controls="controls">
-    <source src="../upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="video/webm" />
-    Ici l\'alternative à la vidéo : upload_musiques/'.$morceau["file_name"].$morceau["extension"].'"
-  </video>';
+    echo '<video width="400" height="222" controls="controls">
+        <source src="../upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="video/webm" />
+        Ici l\'alternative à la vidéo : upload_musiques/'.$morceau["file_name"].$morceau["extension"].'"
+    </video>';
 }
 echo "<br /><br /><strong>Artistes : </strong>";
 for($i=0; $i<sizeof($artistes); $i++) {
@@ -115,7 +117,7 @@ echo "<br /><br />";
 echo "<strong>Description : </strong>".$morceau["description"] . "<br /><br />";
 
 // ----------------------------------
-// Affichage du like et du favoris
+// Affichage du like
 // ----------------------------------
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM aimer WHERE id_morceau = ? AND id_user= ?");
@@ -123,23 +125,14 @@ $stmt->execute(array($_GET["id"], $_SESSION["the_id"]));
 $row = $stmt->fetch();
 echo "<div>";
 if ($row != null) {
-  /*echo "<form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline'>
-  <input type='hidden' name='supprimer_aimer' value='1' />
-  <input value='Jaime déjà' onclick='jaime(myFunction)' type='submit'/>
-  </form>";*/
-  echo '<div id="demo">
-  <button type="button" onclick="jaimePas(myFunction)">Jaime déjà</button>
-  </div>';
+    echo '<div id="like">
+    <button type="button" onclick="jaimePas(likeFunction)">Jaime déjà</button>
+    </div>';
 }
 else {
-  /*echo "
-        <form action='player.php?id=".$_GET["id"]."' method='post' style='display:inline'>
-        <input type='hidden' name='aimer' value='1' />
-        <input value='Jaime' onclick='jaime(myFunction)' type='submit'/>
-        </form>";*/
-        echo '<div id="demo">
-        <button type="button" onclick="jaime(myFunction)">Jaime</button>
-        </div>';
+    echo '<div id="like">
+    <button type="button" onclick="jaime(likeFunction)">Jaime</button>
+    </div>';
 }
 
 echo "</div><br /><br />";
@@ -147,7 +140,6 @@ echo "</div><br /><br />";
 // -------------------------------------
 // Affichage des commentaires :
 // -------------------------------------
-// Va chercher les commentaires
 $commentaire = array();
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM commentaire WHERE id_morceau = ?");
@@ -158,7 +150,7 @@ while ($row = $stmt->fetch()) {
     $commentaire[$i]["texte"] = $row["texte"];
     $commentaire[$i]["date"] = $row["date"];
 
-    // Va chercher l'auteur du commentaire
+    // Affichage de l'auteur du commentaire
     $stmt_ = $pdo->prepare("SELECT * FROM user WHERE id = ?");
     $stmt_->execute(array($row["id_user"]));
     while ($ligne = $stmt_->fetch()) {
@@ -179,7 +171,7 @@ echo "<br /><br />
         <label for='commentaire'>Commentaire : </label>
         <br />
         <textarea id='commentaire' name='commentaire' placeholder='Exprimez-vous ici'></textarea>
-        <button type='button' onclick='add_commentaire(myFunction2); return false;'>Add commentaire</button>
+        <button type='button' onclick='add_commentaire(commentFunction); return false;'>Add commentaire</button>
     </form>";
 
 if($_SESSION["the_role"] == "administrateur") {
@@ -189,7 +181,7 @@ if($_SESSION["the_role"] == "administrateur") {
 echo '</div></div></div>';
 
 echo '<script>
-      function add_commentaire(cFunction) {
+      function add_commentaire(commentFunction) {
         var mon_commentaire = document.getElementById("commentaire").value;
 
         var xhttp;
@@ -202,13 +194,13 @@ echo '<script>
         }
         xhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
-            cFunction(this);
+            commentFunction(this);  // this = xhttp
           }
         };
         xhttp.open("GET", "../add_commentaire/?id_morceau='.$_GET["id"].'&texte=" + mon_commentaire, true);
         xhttp.send();
       }
-      function myFunction2(xhttp) {
+      function commentFunction(xhttp) {
         if(document.getElementById("nouveau_commentaire").innerHTML != "") {
           document.getElementById("nouveau_commentaire").innerHTML = document.getElementById("nouveau_commentaire").innerHTML + "<br />" + xhttp.responseText;
         } else {
@@ -221,36 +213,34 @@ echo '<script>
 
 echo '<!-- Script JavaScript pour le bouton J\'aime -->
 <script>
-    function jaime(cFunction) {
+    function jaime(likeFunction) {
       var xhttp;
       xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          cFunction(this);
+          likeFunction(this);// this = xhttp
         }
       };
       xhttp.open("GET", "../add_jaime/?id_user='.$_SESSION["the_id"].'&id_morceau='.$_GET["id"].'", true);
       xhttp.send();
     }
-    function myFunction(xhttp) {
-      document.getElementById("demo").innerHTML = xhttp.responseText;
-    }
 
     // ---------------------------------
     // JAIME PAS
-    function jaimePas(cFunction) {
-      var xhttp;
-      xhttp=new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          cFunction(this);
-        }
-      };
-      xhttp.open("GET", "../remove_jaime/?id_user='.$_SESSION["the_id"].'&id_morceau='.$_GET["id"].'", true);
-      xhttp.send();
+    function jaimePas(likeFunction) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                likeFunction(this); // this = xhttp
+            }
+        };
+        xhttp.open("GET", "../remove_jaime/?id_user='.$_SESSION["the_id"].'&id_morceau='.$_GET["id"].'", true);
+        xhttp.send();
     }
-    function myFunction(xhttp) {
-      document.getElementById("demo").innerHTML = xhttp.responseText;
+
+    // ---------------------
+    function likeFunction(xhttp) {
+        document.getElementById("like").innerHTML = xhttp.responseText;
     }
 </script>
 

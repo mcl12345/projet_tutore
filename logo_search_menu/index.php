@@ -56,7 +56,7 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
              } else {
                echo '<li>';
              }
-             echo '<a href="liste_likes.php">Liste des morceaux aimés</a>
+             echo '<a href="../liste_likes/">Liste des morceaux aimés</a>
              </li>';
              if(basename($_SERVER['PHP_SELF']) == "liste_recente/index.php")  {
                echo '<li class="active">';

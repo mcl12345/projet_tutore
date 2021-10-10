@@ -12,7 +12,7 @@ echo "<div class='row'>
             <!--<div class='container'>-->";
 
 
-if(isset($_COOKIE["the_username"])) {
+if(isset($_SESSION["the_username"])) {
     echo "<h3>Les vidéos que j'aime</h3>";
 } else {
     echo "<br /><br />Veuillez-vous vous connecter à <a href='../login/'>Se connecter</a><br />ou vous inscrire si vous êtes nouveau ici <a href='../register/'>S'enregistrer</a>";
@@ -22,7 +22,7 @@ $is_likes = false;
 // Va chercher les musiques aimées :
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM aimer WHERE id_user = ?");
-$stmt->execute(array($_COOKIE["the_id"]));
+$stmt->execute(array($_SESSION["the_id"]));
 while ($row = $stmt->fetch()) {
     $is_likes = true;
     $morceau_id = $row['id_morceau'];
