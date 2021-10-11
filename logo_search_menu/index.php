@@ -26,7 +26,6 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
     <meta name="description" content="Plateforme musicale">
     <meta name="keywords" content="musique">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="alternate" href="flux_rss.php" title="My RSS feed" type="application/rss+xml" />
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -46,8 +45,8 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
         echo '<li>';
     }
    echo '<a href="../">Accueil</a>
-   </li>';
-   echo '<li class="dropdown">
+        </li>
+   <li class="dropdown">
          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Listes
          <span class="caret"></span></a>
          <ul class="dropdown-menu">';
