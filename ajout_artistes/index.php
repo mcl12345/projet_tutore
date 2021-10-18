@@ -7,17 +7,23 @@ include("../logo_search_menu/index.php");
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
 function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
-if($_COOKIE["the_role"] == "administrateur") {
+if($_SESSION["the_role"] == "administrateur") {
 
     echo "<div class='row'>
         <div class='col-lg-4'></div>
         <div class='col-lg-4'>
           <div class='container'>
               <form method='post' action='./' enctype='multipart/form-data'>
-                  <label for='nom'>Nom : </label><input id='nom' name='nom' type='text' required /><br />
-                  <label for='prenom'>Prenom : </label><input id='prenom' name='prenom' type='text' required /><br />
-                  <label for='pseudonyme'>Pseudonyme : </label><input id='pseudonyme' name='pseudonyme' type='text' required /><br />
-                  <label for='genre'>Genre : </label>
+                  <label class='label_formulaire' for='nom'>Nom : </label>
+                  <input id='nom' name='nom' type='text' required />
+                  <br />
+                  <label class='label_formulaire' for='prenom'>Prenom : </label>
+                  <input id='prenom' name='prenom' type='text' required />
+                  <br />
+                  <label class='label_formulaire' for='pseudonyme'>Pseudonyme : </label>
+                  <input id='pseudonyme' name='pseudonyme' type='text' required />
+                  <br />
+                  <label class='label_formulaire' for='genre'>Genre : </label>
                   <select name='genre'>";
                   try {
                       $pdo = new PDO("mysql:host=$db_host_;dbname=$db_name_", $db_user_, $db_password_);
@@ -30,8 +36,10 @@ if($_COOKIE["the_role"] == "administrateur") {
                   }
 
                   echo "</select><br />
-                  <label for='age'>Age :</label><input type='text' name='age' id='age' required /> <br />
-                  <input type='submit' name='envoyer' value='Envoyer' />
+                  <label class='label_formulaire' for='age'>Age :</label>
+                  <input type='text' name='age' id='age' required />
+                  <br /><br />
+                  <input style='margin-left: 105px;' type='submit' name='envoyer' value='Envoyer' />
               </form>
           </div>
           </div>

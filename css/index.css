@@ -1,17 +1,26 @@
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .formulaire {
     margin-left: auto;
     width: 500px;
 }
 
 .label_formulaire {
-    width: 200px;
+    width: 100px;
 }
 
 .titre_musique {
-  margin-top: -20px;
+    margin-top: -20px;
 }
 
 .image_musique {
-  display: inline;
-  margin-top: 150px;
+    display: inline;
+    margin-top: 150px;
+}
+
+button {
+    border-radius: 5px 5px 5px 5px;
 }

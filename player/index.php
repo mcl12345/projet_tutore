@@ -6,31 +6,32 @@ include("../logo_search_menu/index.php");
 // Affichage du logo , du formulaire de recherche et du menu
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
-// Va chercher le morceau à écouter
-$morceau_present = false;
-$morceau = array();
+// Va chercher la musique à écouter
+$musique_present = false;
+$musique = array();
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
 $stmt->execute(array($_GET["id"]));
 while ($row = $stmt->fetch()) {
-    $morceau_present = true;
-    $morceau["file_name"]       = $row["file_name"];
-    $morceau["extension"]       = $row["extension"];
-    $morceau["titre"]           = $row["titre"];
-    $morceau["imageURL"]        = $row["imageURL"];
-    $morceau["description"]     = $row["description"];
+    $musique_present = true;
+    $musique["file_name"]       = $row["file_name"];
+    $musique["extension"]       = $row["extension"];
+    $musique["titre"]           = $row["titre"];
+    $musique["imageURL"]        = $row["imageURL"];
+    $musique["description"]     = $row["description"];
 }
 
-if(!$morceau_present) {
-  echo "<div class='row'>
-          <div class='col-lg-4'></div>
-          <div class='col-lg-4'>
-              <div class='container'>";
-    echo "Aucun morceau disponible !</div></div></div></body></html>";
-    exit;
+if(!$musique_present) {
+    echo "<div class='row'>
+            <div class='col-lg-4'></div>
+            <div class='col-lg-4'>Aucune musique disponible !</div>
+            </div>
+            </body>
+            </html>";
+        exit;
 }
 
-// Va chercher les artistes du morceau
+// Récupère les artistes de la musique
 $artistes = array();
 $stmt = $pdo->prepare("SELECT * FROM artiste_morceau WHERE id_morceau = ?");
 $stmt->execute(array($_GET["id"]));
@@ -44,7 +45,7 @@ while ($row = $stmt->fetch()) {
     $i++;
 }
 
-// Va chercher les genres du morceau
+// Récupère les genres musicaux de la musique
 $genres = array();
 $stmt = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_morceau = ?");
 $stmt->execute(array($_GET["id"]));
@@ -62,13 +63,13 @@ while ($row = $stmt->fetch()) {
 // Gestion de l'enregistrement des commentaires
 // --------------------------------------------------
 $id_user = $_SESSION["the_id"];
-$id_morceau = $_GET["id"];
+$id_musique = $_GET["id"];
 $date_ = date("Y-m-d h:m:s");
 
 if(isset($_POST["commentaire"])) {
     $texte = $_POST["commentaire"];
     $stmt_ = $pdo->prepare("INSERT INTO commentaire (id_morceau, id_user, texte)  VALUES ( :id_morceau, :id_user, :texte)");
-    $stmt_->bindParam(':id_morceau', $id_morceau);
+    $stmt_->bindParam(':id_morceau', $id_musique);
     $stmt_->bindParam(':id_user', $id_user);
     $stmt_->bindParam(':texte', $texte);
     $stmt_->execute();
@@ -76,7 +77,7 @@ if(isset($_POST["commentaire"])) {
     // Ajoute une ligne à l'historique
     $stmt_ = $pdo->prepare("INSERT INTO historique (id_user, id_morceau, date_)  VALUES ( :id_user, :id_morceau, :date_)");
     $stmt_->bindParam(':id_user', $id_user);
-    $stmt_->bindParam(':id_morceau', $id_morceau);
+    $stmt_->bindParam(':id_morceau', $id_musique);
     $stmt_->bindParam(':date_', $date_);
     $stmt_->execute();
 }
@@ -89,19 +90,18 @@ echo "<div class='container'>
 			<div class='row'>
 				<div class='col-md-4 col-md-offset-4'>";
 
-echo "<h3>".$morceau["titre"]."</h3><br />";
-if($morceau["imageURL"] != null && $morceau["extension"] == ".ogg") {
-    echo "<img src='../upload_images/".$morceau["imageURL"]."' width='270px' height='170px' /><br />";
+echo "<h3>".$musique["titre"]."</h3><br />";
+if($musique["imageURL"] != null && $musique["extension"] == ".ogg") {
+    echo '<img src="../upload_images/'.$musique["imageURL"].'" width="270px" height="170px" /><br />
+            <audio controls="controls">
+            <source src="../upload_musiques/'.$musique["file_name"].$musique["extension"].'" type="audio/ogg" />
+            Votre navigateur n\'est pas compatible
+            </audio>';
 }
-if($morceau["extension"] == ".ogg") {
-    echo '<audio controls="controls">
-      <source src="../upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="audio/ogg" />
-      Votre navigateur n\'est pas compatible
-    </audio>';
-} else if($morceau["extension"] == ".webm") {
-    echo '<video width="400" height="222" controls="controls">
-        <source src="../upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="video/webm" />
-        Ici l\'alternative à la vidéo : upload_musiques/'.$morceau["file_name"].$morceau["extension"].'"
+if($musique["extension"] == ".webm") {
+    echo '<video id="myVideo" width="400" height="222" controls="controls">
+        <source src="../upload_musiques/'.$musique["file_name"].$musique["extension"].'" type="video/webm" />
+        Ici l\'alternative à la vidéo : upload_musiques/'.$musique["file_name"].$musique["extension"].'"
     </video>';
 }
 echo "<br /><br /><strong>Artistes : </strong>";
@@ -114,7 +114,19 @@ for($i=0; $i<sizeof($genres); $i++) {
     echo $genres[$i] . " ";
 }
 echo "<br /><br />";
-echo "<strong>Description : </strong>".$morceau["description"] . "<br /><br />";
+echo "<strong>Description : </strong>".$musique["description"] . "<br /><br />";
+
+// JS - Make the background color darker.
+
+echo "<script>
+            var video = document.getElementById('myVideo');
+            video.onplaying = function() {
+                document.body.style.backgroundColor = 'black';
+            };
+            video.onpause = function() {
+                document.body.style.backgroundColor = 'white';
+            };
+        </script>";
 
 // ----------------------------------
 // Affichage du like
@@ -135,7 +147,8 @@ else {
     </div>';
 }
 
-echo "</div><br /><br />";
+echo "</div>
+<br /><br />";
 
 // -------------------------------------
 // Affichage des commentaires :
@@ -175,7 +188,7 @@ echo "<br /><br />
     </form>";
 
 if($_SESSION["the_role"] == "administrateur") {
-  echo "<a href=../moderation/?id=".$id_morceau.">Modérer</a>";
+  echo "<a href=../moderation/?id=".$id_musique.">Modérer</a>";
 }
 
 echo '</div></div></div>';

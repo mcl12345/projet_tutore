@@ -36,10 +36,9 @@ if( isset($_POST["id_morceau"]) ) {
 
 echo "<div class='row'>
         <div class='col-lg-4'></div>
-        <div class='col-lg-4'>
-            <div class='container'>";
+        <div class='col-lg-4'>";
 
-echo "<h3>Morceau à supprimer : </h3><br />";
+echo "<h3>Musique à supprimer : </h3><br />";
 
 // Va chercher les morceaux
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
@@ -50,16 +49,16 @@ while ($row = $stmt->fetch()) {
     echo "<input type='radio' id='id_morceau' name='id_morceau' value='".$row["id"]."' />
           &nbsp;&nbsp;&nbsp;";
     if($row["imageURL"] != null || $row["imageURL"] != "") {
-        echo "<img width='50' height='50' src='upload_images/".$row["imageURL"]."' />";
+        echo "<img width='50' height='50' src='../upload_images/".$row["imageURL"]."' />";
     }
     echo "&nbsp;&nbsp;&nbsp;
-          <a href='player.php?id=".$row["id"]."'>" . $row["titre"] . "</a><br />";
+          <a href='../player/?id=".$row["id"]."'>" . $row["titre"] . "</a><br />";
 }
 echo "<br /><input value='Supprimer' type='submit' />";
 echo "</form><br />";
 
 
-echo "</div></div></div>";
+echo "</div></div>";
 
 echo '</body></html>';
 

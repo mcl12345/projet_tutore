@@ -20,13 +20,16 @@ echo "<div class='row'>
 if(isset($_SESSION["the_username"])) {
     echo "<h3>Musiques écoutées récemment</h3><br />";
 
-    echo "<br />
-    <form action='./' method='post'>
-      <input type='hidden' name='id_user' value='".$_GET["the_id"]."' />
-      <input type='submit' value='Nettoyer l historique' /></form><br />";
+    echo '<br />
+    <form action="./" method="post">
+      <input type="hidden" name="id_user" value="'.$_GET["the_id"].'" />
+      <input type="submit" value="Nettoyer l\'historique" />
+    </form>
+    <br />';
 
 } else {
-    echo "<br /><br />Veuillez-vous vous connecter à <a href='../login/'>Se connecter</a><br />ou vous inscrire si vous êtes nouveau ici <a href='../register/'>S'enregistrer</a>";
+    echo "<br /><br />Veuillez-vous vous connecter à <a href='../login/'>Se connecter</a>
+    <br />ou vous inscrire si vous êtes nouveau ici <a href='../register/'>S'enregistrer</a>";
 }
 
 // Va chercher l'historique

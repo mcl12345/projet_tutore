@@ -8,9 +8,7 @@ print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
 echo "<div class='row'>
         <div class='col-lg-4'></div>
-        <div class='col-lg-4'>
-            <!--<div class='container'>-->";
-
+        <div class='col-lg-4'>";
 
 if(isset($_SESSION["the_username"])) {
     echo "<h3>Les vidéos que j'aime</h3>";
@@ -32,12 +30,12 @@ while ($row = $stmt->fetch()) {
     while ($ligne = $stmt_->fetch()) {
         if($ligne["imageURL"] != null || $ligne["imageURL"] != "") {
             echo "<div class='image_musique'>
-            <img width='250' height='150' src='upload_images/".$ligne["imageURL"]."' loading='lazy' />
+            <img width='250' height='150' src='../upload_images/".$ligne["imageURL"]."' loading='lazy' />
             </div>&nbsp;";
         }
         echo "<span class='titre_musique'>";
-        if($ligne['extension'] == ".webm") { echo "video : " ;}
-        if($ligne['extension'] == ".ogg") { echo "audio : " ;}
+        if($ligne['extension'] == ".webm") { echo "video : " ; }
+        if($ligne['extension'] == ".ogg") { echo "audio : " ; }
         echo "<strong>
                 <a href='../player/?id=".$morceau_id."'>" . $ligne["titre"] . "</a>
                 </strong>

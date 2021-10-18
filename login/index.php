@@ -7,13 +7,16 @@ function formulaire_login_HTML() {
     echo "<div class='row'>
             <div class='col-lg-4'></div>
             <div class='col-lg-4'>
-              <div class='container'><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br />
                 <form method='post' action='./'>
-                  <label class='label_formulaire' for='username'>Username : </label><input id='username' name='username' type='text' required /><br />
-                  <label class='label_formulaire' for='plain_password'>Password : </label><input id='plain_password' name='plain_password' id='plain_password' type='password' required /><br /><br />
+                  <label class='label_formulaire' for='username'>Username : </label>
+                  <input id='username' name='username' type='text' required /><br />
+                  
+                  <label class='label_formulaire' for='plain_password'>Password : </label>
+                  <input id='plain_password' name='plain_password' id='plain_password' type='password' required /><br /><br />
+                  
                   <input type='submit' style='margin-left:100px;' value='Connexion' />
                 </form>
-              </div>
             </div>
         </div>";
 }

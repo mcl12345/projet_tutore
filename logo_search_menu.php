@@ -4,195 +4,164 @@ session_start();
 
 function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_password_) {
 
-  $bool_verification_role = false;
-  try {
-      $pdo = new PDO("mysql:host=$db_host_;dbname=$db_name_", $db_user_, $db_password_);
-      $stmt = $pdo->prepare("SELECT * FROM user where username = ?");
-      if ($stmt->execute(array($_COOKIE["the_username"]))) {
-        while ($row = $stmt->fetch()) {
-          if($row['role'] == "administrateur") {
-              $bool_verification_role = true;
-          }
+    $bool_verification_role = false;
+    try {
+        $pdo = new PDO("mysql:host=".$db_host_.";dbname=".$db_name_, $db_user_, $db_password_);
+        $stmt = $pdo->prepare("SELECT * FROM user where username = ?");
+        if($stmt->execute(array($_SESSION["the_username"]))) {
+            while($row = $stmt->fetch()) {
+                if($row['role'] == "administrateur") {
+                    $bool_verification_role = true;
+                }
+            }
         }
-      }
-  } catch(PDOException $e) {
-      echo $sql . "<br>" . $e->getMessage();
-  }
+    } catch(PDOException $e) {
+       echo $sql . "<br>" . $e->getMessage();
+    }
 
-  echo '<html>
+  echo '<!DOCTYPE html>
+  <html>
   <head>
     <title>Plateforme musicale</title>
     <meta charset="UTF-8">
     <meta name="description" content="Plateforme musicale">
     <meta name="keywords" content="musique">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="alternate" href="flux_rss/" title="My RSS feed" type="application/rss+xml" />
-    <link rel="stylesheet" href="css/index.css">
+ 
+    <link rel="icon" type="image/png" href="img/music_favicon.png">
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <!-- TODO : Rebuild the menu -->
-   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>-->
+    <link href="css/bootstrap5.css" rel="stylesheet">
+    <script src="js/bootstrap5.js"></script>
 
+    <link type="text/css" rel="stylesheet" href="css/index.css">
+
+    <link type="text/css" rel="stylesheet" href="css/menu-mobile.css" />
+    <link type="text/css" rel="stylesheet" href="css/mmenu-light-lib.css" />
+
+    <script src="js/mmenu-light.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="css/progress-top-bar.css" />
+    <script src="js/topbar.js"></script>
   </head>
   <body>
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="./">Plateforme musicale</a>
-            </div>
-            <ul class="nav navbar-nav">';
+    <div class="topbar"></div>
 
-    if(basename($_SERVER['PHP_SELF']) == "index.php")  {
-        echo '<li class="active">';
-    } else {
-        echo '<li>';
-    }
-   echo '<a href="./">Accueil</a>
-   </li>';
-   echo '<li class="dropdown">
-         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Listes
-         <span class="caret"></span></a>
-         <ul class="dropdown-menu">';
-             if(basename($_SERVER['PHP_SELF']) == "liste_likes/index.php")  {
-               echo '<li class="active">';
-             } else {
-               echo '<li>';
-             }
-             echo '<a href="liste_likes/">Liste des morceaux aimés</a>
-             </li>';
-             if(basename($_SERVER['PHP_SELF']) == "liste_recente/index.php")  {
-               echo '<li class="active">';
-             } else {
-               echo '<li>';
-             }
-             echo '<a href="liste_recente/">Liste de morceau(x) écouté(s) récemment</a>
-             </li>';
-             if(basename($_SERVER['PHP_SELF']) == "liste_genre/index.php")  {
-               echo '<li class="active">';
-             } else {
-               echo '<li>';
-             }
-             echo '<a href="liste_genre/">Liste par genre</a>
-             </li>';
-   echo '</ul>
-   </li>';
-   if(basename($_SERVER['PHP_SELF']) == "about/index.php")  {
-     echo '<li class="active">';
-   } else {
-     echo '<li>';
-   }
-   echo '<a href="about/">About</a>
-   </li>';
-   /*if(basename($_SERVER['PHP_SELF']) == "flux_rss/index.php")  {
-     echo '<li class="active">';
-   } else {
-     echo '<li>';
-   }
-   echo '<a href="flux_rss/">RSS</a>
-   </li>';*/
-   if($bool_verification_role) {
-      echo '<li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin
-            <span class="caret"></span></a>
-            <ul class="dropdown-menu">';
-            if(basename($_SERVER['PHP_SELF']) == "upload_morceau/index.php")  {
-              echo '<li class="active">';
-            } else {
-              echo '<li>';
-            }
-            echo '<a href="upload_morceau/">Admin : Upload d\'un morceau</a>
-           </li>';
+        <div id="page" class="fixed-top">
+			<div class="header">
+                <span class="main_title">Plateforme musicale</span>
 
-           if(basename($_SERVER['PHP_SELF']) == "ajout_artistes/index.php")  {
-             echo '<li class="active">';
-           } else {
-             echo '<li>';
-           }
-           echo '<a href="ajout_artistes/">Admin : Ajout artistes</a>
-           </li>';
+                <form class="navbar-form navbar-left decalage_navbar" action="search/" method="post">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Recherche" id="recherche" name="recherche" style="z-index:0;" />
+                        <div class="input-group-btn">
+                            <button class="btn btn-light" type="submit" style="height:34px; margin-top:-15px; z-index:0;">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>         
 
-           if(basename($_SERVER['PHP_SELF']) == "selectionner_artiste_a_modifier/index.php")  {
-             echo '<li class="active">';
-           } else {
-             echo '<li>';
-           }
-           echo '<a href="selectionner_artiste_a_modifier/">Admin : Modifier artistes</a>
-           </li>';
+                <!-- Ref -->
+                <a href="#menu"><span></span></a>
+				
+				<nav id="menu">
+					<ul>
+						<li class="Selected"><a href="http://213.32.90.43/projet-tutore">Accueil</a></li>';						
+            if($_SESSION["the_username"]) {
+              echo '<li><span>Listes</span>
+                    <ul>
+                      <li><a href="liste_likes/">Liste des musiques aimées</a></li>
+                      <li><a href="liste_recente/">Liste de musique(s) écoutée(s) récemment</a></li>
+                      <li><a href="liste_genre/">Liste par genre musical</a></li>
+                    </ul>
+                    </li>';
+        }
+           
+        if($_SESSION["the_username"]) {      
+            echo '<li><span>Administration</span>
+			  	  <ul>
+                    <li><a href="upload_musique_page/">Téléversement d\'une musique</a></li>
+                    <li><a href="ajout_artistes/">Ajout d\'un artiste</a></li>
+                    <li><a href="selectionner_artiste_a_modifier/"> Modification d\'un artiste</a></li>
+                    <li><a href="add_artiste_to_morceau1/"> Ajout d\'un artiste à une musique</a></li>
+                    <li><a href="add_genre_to_morceau1/"> Ajout d\'un genre musical à une musique</a></li>
+                    <li><a href="delete_morceau/"> Suppression d\'une musique</a></li>
+                </ul>
+			  </li>';
+        }
 
-           if(basename($_SERVER['PHP_SELF']) == "add_artiste_to_morceau1/index.php")  {
-             echo '<li class="active">';
-           } else {
-             echo '<li>';
-           }
-           echo '<a href="add_artiste_to_morceau1/">Admin : Ajout des artistes au morceau</a>
-           </li>';
+        if($_SESSION["the_username"]) {      
+		    echo '<li><span>Paramètres</span>
+            <ul>
+              <li><a href="profil/"> Profil '.$_SESSION["the_username"].'</a></li>
+              <li><a href="logout/"> Déconnexion</a></li>
+          </ul>
+          </li>';
+        } else {
+            echo '<li><span>Paramètres</span>
+            <ul>
+                <li><a href="register/"> Enregistrement</a></li>
+                <li><a href="login/"> Se connecter</a></li>
+            </ul>
+        </li>';
+        }
+		echo '<li><a href="licence/">Licence</a></li>
+        </ul>    
+			</nav>
+		</div><!-- page - fixed-top -->
+	</div><!-- header -->
+    
+    <script>
+        topbar.config({
+            autoRun      : false, 
+            barThickness : 5,
+            barColors    : {
+                "0"      : "rgba(26, 188, 156, .7)",
+                ".3"     : "rgba(26, 188, 156, .7)",
+                "1.0"    : "rgba(26, 188, 156, .7)"
+            },
+            shadowBlur   : 5,
+            shadowColor  : "rgba(0, 0, 0, .5)",
+            className    : "topbar",
+        })
+        topbar.show();
+        (function step() {
+            setTimeout(function() {  
+            if (topbar.progress("+.01") < 1) { step(); } else { topbar.hide(); }
+            }, 1);
+        })()
+    </script>
 
-           if(basename($_SERVER['PHP_SELF']) == "add_genre_to_morceau1/index.php")  {
-             echo '<li class="active">';
-           } else {
-             echo '<li>';
-           }
-           echo '<a href="add_genre_to_morceau1.php">Admin : Ajout des genres au morceau</a>
-           </li>';
-
-           if(basename($_SERVER['PHP_SELF']) == "delete_morceau/index.php")  {
-             echo '<li class="active">';
-           } else {
-             echo '<li>';
-           }
-           echo '<a href="delete_morceau/">Admin : Suppression d\'un morceau</a>
-           </li>';
-   }
-    echo '</ul>
-    </li>';
-
-   echo '</ul>
-
-    <form class="navbar-form navbar-left" action="search.php" method="post">
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Rechercher" name="search" />
-      </div>
-      <button type="submit" class="btn btn-default">Rechercher</button>
-    </form>
-
-   <ul class="nav navbar-nav navbar-right">';
-
-   if($_SESSION["the_username"]) {
-     if(basename($_SERVER['PHP_SELF']) == "profil/index.php")  {
-       echo '<li class="active">';
-     } else {
-       echo '<li>';
-     }
-     echo '<a href="profil/"><span class="glyphicon glyphicon-user"></span> Profil '.$_SESSION["the_username"].'</a></li>';
-     if(basename($_SERVER['PHP_SELF']) == "logout/index.php")  {
-       echo '<li class="active">';
-     } else {
-       echo '<li>';
-     }
-     echo '<a href="logout/"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>';
-   } else {
-       if(basename($_SERVER['PHP_SELF']) == "register/index.php")  {
-         echo '<li class="active">';
-       } else {
-         echo '<li>';
-       }
-       echo '<a href="register/"><span class="glyphicon glyphicon-user"></span> Enregistrement</a></li>';
-      if(basename($_SERVER['PHP_SELF']) == "login/index.php")  {
-         echo '<li class="active">';
-      } else {
-         echo '<li>';
-      }
-      echo '<a href="login/"><span class="glyphicon glyphicon-log-in"></span> Se connecter</a></li>';
-   }
-     echo '
-     <li></li>
-   </ul>
- </div>
-</nav>';
-
+    <script>
+        var menu = new MmenuLight(
+        document.querySelector( "#menu" ),
+        "all"
+        );
+    
+        var navigator = menu.navigation({
+        // selectedClass: "Selected",
+        // slidingSubmenus: true,
+        // theme: "dark",
+        // title: "Menu"
+        });
+    
+        var drawer = menu.offcanvas({
+        // position: "left"
+        });
+    
+        //	Open the menu.
+        document.querySelector( "a[href=\"#menu\"]" )
+        .addEventListener( "click", evnt => {
+            evnt.preventDefault();
+            drawer.open();
+        });
+    </script>
+    <br /><br /><br />';
 }
 
 ?>

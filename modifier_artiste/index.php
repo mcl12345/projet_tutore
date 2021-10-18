@@ -20,11 +20,20 @@ function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
                   $stmt = $pdo->prepare("SELECT * FROM artiste WHERE id = ?");
                   $stmt->execute(array($_GET["id_artiste"]));
                   while ($row = $stmt->fetch()) {
-                    echo "<label for='nom'>Nom : </label><input id='nom' value='".$row["nom"]."' name='nom' type='text' required /><br />";
-                    echo "<label for='prenom'>Prenom : </label><input id='prenom' value='".$row["prenom"]."' name='prenom' type='text' required /><br />
-                    <label for='pseudonyme'>Pseudonyme : </label><input id='pseudonyme' value='".$row["pseudonyme"]."' name='pseudonyme' type='text' required /><br />
-                    <label for='age'>Age :</label><input type='text' name='age' value='".$row["age"]."' id='age' required /> <br />";
-                    echo "<label for='genre'>Genre(s) : </label> ";
+                    echo "<label class='label_formulaire' for='nom'>Nom : </label>
+                            <input id='nom' value='".$row["nom"]."' name='nom' type='text' required />
+                            <br />
+                            <label class='label_formulaire' for='prenom'>Prenom : </label>
+                            <input id='prenom' value='".$row["prenom"]."' name='prenom' type='text' required />
+                            <br />
+                            <label class='label_formulaire' for='pseudonyme'>Pseudonyme : </label>
+                            <input id='pseudonyme' value='".$row["pseudonyme"]."' name='pseudonyme' type='text' required />
+                            <br />
+                            <label class='label_formulaire' for='age'>Age :</label>
+                            <input type='text' name='age' value='".$row["age"]."' id='age' required />
+                            <br />
+                            <label class='label_formulaire' for='genre'>Genre(s) : </label>";
+                    
                     $stmt_ = $pdo->prepare("SELECT * FROM artiste_genre WHERE id_artiste = ?");
                     $stmt_->execute(array($row["id"]));
                     while ($ligne = $stmt_->fetch()) {
@@ -34,7 +43,8 @@ function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
                           echo $ligne_['nom'] . " ";
                         }
                     }
-                    echo "<br /><select name='genre'>";
+                    echo "<br />
+                    <select style='margin-left: 100px;' name='genre'>";
 
                         $stmt_ = $pdo->prepare("SELECT * FROM artiste_genre WHERE id_artiste = ?");
                         $stmt_->execute(array($row["id"]));
@@ -49,9 +59,9 @@ function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
                             while ($ligne_ = $_stmt_->fetch()) {
                               echo "<option value='".$ligne_['nom']."'>".$ligne_['nom']."</option>";
                             }
-
                         }
-                        echo "</select><br />";
+                        echo "</select>
+                        <br />";
 
                       }
 
@@ -59,7 +69,8 @@ function formulaire_upload($db_host_, $db_name_, $db_user_, $db_password_) {
                         echo $sql . "<br />" . $e->getMessage();
                     }
 
-                  echo "<input type='submit' name='envoyer' value='Envoyer' />
+                  echo "<br /><br />
+                        <input style='margin-left: 100px;' type='submit' name='envoyer' value='Envoyer' />
               </form>
           </div>
           </div>
@@ -90,12 +101,11 @@ if(isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["pseudonyme"]
    $stmt->execute();
 
    echo "<div class='row'>
-       <div class='col-lg-4'></div>
-       <div class='col-lg-4'>
-         <div class='container'>L'artiste " . $_POST["pseudonyme"] . " a été modifié avec succès !<br />
-         </div>
-      </div>
-      </div>";
+            <div class='col-lg-4'></div>
+            <div class='col-lg-4'>
+                <div class='container'>L'artiste " . $_POST["pseudonyme"] . " a été modifié avec succès !</div>
+            </div>
+        </div>";
 
 } else {
     formulaire_upload($db_host, $db_name, $db_user, $db_password);

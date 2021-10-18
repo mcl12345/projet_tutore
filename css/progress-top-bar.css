@@ -1,0 +1,40 @@
+.header a {
+  display: block;
+  width: 40px;
+  height: 18px;
+  padding: 11px;
+  margin: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+a, a:link, a:active, a:visited, a:hover {
+  color: inherit;
+  text-decoration: underline;
+}
+.header, .footer {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  line-height: 50px;
+}
+.header, .content, .footer {
+  text-align: center;
+}
+body {
+  font-family: Arial, Helvetica, Verdana;
+  font-size: 14px;
+  line-height: 22px;
+  color: #666;
+  -webkit-text-size-adjust: none;
+}
+:root {
+  --mm-spn-item-height: 50px;
+  --mm-spn-item-indent: 20px;
+  --mm-spn-line-height: 24px;
+}
+:root {
+  --mm-ocd-width: 80%;
+  --mm-ocd-min-width: 200px;
+  --mm-ocd-max-width: 440px;
+}
