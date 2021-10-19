@@ -6,28 +6,27 @@ include("../logo_search_menu/index.php");
 // Affichage du logo , du formulaire de recherche et du menu
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
-if($_COOKIE["the_role"] == "administrateur") {
-    // Va chercher le morceau à écouter
-    $morceau = array();
+if($_SESSION["the_role"] == "administrateur") {
+    // Récupère la musique à écouter
+    $musique = array();
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
     $stmt = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
     $stmt->execute(array($_GET["id"]));
     while ($row = $stmt->fetch()) {
-        $morceau["file_name"] = $row["file_name"];
-        $morceau["extension"] = $row["extension"];
-        $morceau["titre"] = $row["titre"];
+        $musique["file_name"] = $row["file_name"];
+        $musique["extension"] = $row["extension"];
+        $musique["titre"] = $row["titre"];
     }
 
     echo "<div class='row'>
             <div class='col-lg-4'></div>
-            <div class='col-lg-4'>
-                <div class='container'>";
+            <div class='col-lg-4'>";
 
-    echo "<h3>".$morceau["titre"]."</h3>";
-    echo '<audio controls="controls">
-      <source src="../upload_musiques/'.$morceau["file_name"].$morceau["extension"].'" type="audio/ogg" />
+    echo "<h3>".$musique["titre"]."</h3>";
+    echo "<audio controls='controls'>
+      <source src='../upload_musiques/".$musique['file_name'].$musique['extension']."' type='audio/ogg' />
       Votre navigateur n\'est pas compatible
-    </audio><br /><br />';
+    </audio><br /><br />";
 
     if(isset($_POST["delete_commentaire"])) {
         $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
@@ -44,7 +43,7 @@ if($_COOKIE["the_role"] == "administrateur") {
         $commentaire[$i] = array();
         $commentaire[$i]["id"] = $row["id"];
         $commentaire[$i]["texte"] = $row["texte"];
-        $commentaire[$i]["date"] = $row["date"];
+        $commentaire[$i]["date_"] = $row["date_"];
 
         // Va chercher l'auteur du commentaire
         $stmt_ = $pdo->prepare("SELECT * FROM user WHERE id = ?");
@@ -59,7 +58,8 @@ if($_COOKIE["the_role"] == "administrateur") {
         echo "<form action='./?id=" . $_GET["id"] . "' method='post'>";
         // Affichage des commentaires :
         for ($i=0; $i < sizeof($commentaire) ; $i++) {
-            echo "<input name='delete_commentaire' type='radio' value='".$commentaire[$i]["id"]."' /> " . $commentaire[$i]["date"] . " - <strong>" . $commentaire[$i]["auteur"] . "</strong> : " . $commentaire[$i]["texte"] . "<br />";
+            echo "<input name='delete_commentaire' type='radio' value='".$commentaire[$i]["id"]."' /> " . $commentaire[$i]["date_"] . " - <strong>" . $commentaire[$i]["auteur"] 
+                 . "</strong> : " . $commentaire[$i]["texte"] . "<br />";
         }
         echo "<input type='submit' value='Supprimer' />";
         echo "</form>";
@@ -67,13 +67,14 @@ if($_COOKIE["the_role"] == "administrateur") {
 
     echo "<br /><br />
     <form action='../player/?id=".$_GET['id']."' method='post'>
-        <label for='commentaire'>Commentaire : </label><br /><textarea id='commentaire' name='commentaire' placeholder='Exprimez-vous ici'></textarea>
+        <label for='commentaire'>Commentaire : </label><br />
+        <textarea id='commentaire' name='commentaire' placeholder='Exprimez-vous ici'></textarea>
         <input type='submit' value='Envoyer' />
         </form>";
 
         echo "<a href='../player/?id=".$_GET['id']."'>Revenir au lecteur</a>";
 
-    echo '</div></div></div>';
+    echo '</div></div>';
 
 }
 

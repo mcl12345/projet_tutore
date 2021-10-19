@@ -3,61 +3,69 @@
 include("../connection_bdd.php");
 include("../logo_search_menu/index.php");
 
-// Affichage du logo , du formulaire de recherche et du menu
+// Affichage du logo , de la barre de recherche et du menu
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
-echo "<div class='row'>
-    <div class='col-lg-4'></div>
-    <div class='col-lg-4'>
-      <div class='container'>";
-if ( isset($_POST["search"])) {
-  $search = $_POST["search"];
+echo    "<div class='row'>
+            <div class='col-lg-4'></div>
+            <div class='col-lg-4'>";
 
-  // Va chercher le titre d'un morceau
-  $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
-  $stmt = $pdo->prepare("SELECT * FROM morceau WHERE titre LIKE '%$search%'");
-  $stmt->execute();
-  while ($ligne = $stmt->fetch()) {
-      echo "<a href='../player/?id=".$ligne["id"]."'>" . $ligne["titre"] . "</a><br />";
-  }
+if ( isset($_POST["recherche"]) ) {
+    $search = $_POST["recherche"];
+    $isInto = false;
+    echo "Voici les musiques pour la recherche <strong>" . $search . "</strong> : <br /><br />";
 
-  // Va chercher les morceaux ayant pour artiste ce pseudonyme
-  $is_into = false;
-  $stmt = $pdo->prepare("SELECT * FROM artiste WHERE pseudonyme = ?");
-  $stmt->execute(array($search));
-  while ($ligne = $stmt->fetch()) {
-      $_stmt = $pdo->prepare("SELECT * FROM artiste_morceau WHERE id_artiste = ?");
-      $_stmt->execute(array($ligne["id"]));
-      while ($_ligne = $_stmt->fetch()) {
-          $_stmt_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
-          $_stmt_->execute(array($_ligne["id_morceau"]));
+    // Récupère une musique selon son titre
+    $pdo = new PDO("mysql:host=$db_host; dbname=$db_name", $db_user, $db_password);
+    $statement = $pdo->prepare("SELECT * FROM morceau WHERE titre LIKE '%$search%'");
+    $statement->execute();
+    while ($ligne = $statement->fetch()) {
+        $isInto = true;
+        echo "<a href='../player/?id=".$ligne["id"]."'>" . $ligne["titre"] . "</a>
+                <br />";
+    }
 
-          while ($_ligne_ = $_stmt_->fetch()) {
-              if(!$is_into) {
-                  echo "Voici les morceaux pour la recherche <strong>" . $search . "</strong> : <br /><br />";
-                  $is_into = true;
-              }
-            echo "<a href='../player/?id=".$_ligne_["id"]."'>" . $_ligne_["titre"] . "</a><br />";
-          }
-      }
-  }
+    // Récupère les musiques ayant pour artiste ce pseudonyme
+    $statement = $pdo->prepare("SELECT * FROM artiste WHERE pseudonyme = ?");
+    $statement->execute(array($search));
+    while ($ligne = $statement->fetch()) {
+        $_statement = $pdo->prepare("SELECT * FROM artiste_morceau WHERE id_artiste = ?");
+        $_statement->execute(array($ligne["id"]));
+        while ($_ligne = $_statement->fetch()) {
+            $_statement_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
+            $_statement_->execute(array($_ligne["id_morceau"]));
 
-  // Va chercher les morceaux d'un genre
-  $stmt = $pdo->prepare("SELECT * FROM genre WHERE nom = ?");
-  $stmt->execute(array($search));
-  while ($ligne = $stmt->fetch()) {
-      $_stmt = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_genre = ?");
-      $_stmt->execute(array($ligne["id"]));
-      while ($_ligne = $_stmt->fetch()) {
-          $_stmt_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
-          $_stmt_->execute(array($_ligne["id_morceau"]));
-          while ($_ligne_ = $_stmt_->fetch()) {
-            echo "<a href='../player/?id=".$_ligne_["id"]."'>" . $_ligne_["titre"] . "</a><br />";
-          }
-      }
-  }
+            while ($_ligne_ = $_statement_->fetch()) {
+                $isInto = true;
+                echo "<a href='../player/?id=".$_ligne_["id"]."'>" . $_ligne_["titre"] . "</a>
+                        <br />";
+            }
+        }
+    }
+
+    // Récupère les musiques d'un genre musical
+    $statement = $pdo->prepare("SELECT * FROM genre WHERE nom = ?");
+    $statement->execute(array($search));
+    while ($ligne = $statement->fetch()) {
+        $_statement = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_genre = ?");
+        $_statement->execute(array($ligne["id"]));
+        while ($_ligne = $_statement->fetch()) {
+            $_statement_ = $pdo->prepare("SELECT * FROM morceau WHERE id = ?");
+            $_statement_->execute(array($_ligne["id_morceau"]));
+            while ($_ligne_ = $_statement_->fetch()) {
+                $isInto = true;
+                echo "<a href='../player/?id=".$_ligne_["id"]."'>" . $_ligne_["titre"] . "</a>
+                        <br />";
+            }
+        }
+    }
+
+    if(!$isInto) {
+        echo "Aucun résultats.";
+    }
 }
 
-echo '</div></div></div></body></html>';
+echo '</div></div>
+    </body></html>';
 
 ?>

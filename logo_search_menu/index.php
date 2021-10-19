@@ -16,7 +16,7 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
             }
         }
     } catch(PDOException $e) {
-       echo $sql . "<br>" . $e->getMessage();
+       echo $sql . "<br />" . $e->getMessage();
     }
 
   echo '<!DOCTYPE html>
@@ -30,12 +30,12 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
  
     <link rel="icon" type="image/png" href="../img/music_favicon.png">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <link href="../css/bootstrap5.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/bootstrap5.css">
     <script src="../js/bootstrap5.js"></script>
 
     <link type="text/css" rel="stylesheet" href="../css/index.css">
@@ -53,7 +53,20 @@ function print_LOGO_FORMSEARCH_MENU($db_host_, $db_name_, $db_user_, $db_passwor
 
         <div id="page" class="fixed-top">
 			<div class="header">
-                <span class="main_title">Plateforme musicale</span>
+                <span id="titre-cliquable">Plateforme musicale</span>
+
+                <script>
+                    var titreCliquable = document.getElementById("titre-cliquable");
+                    titreCliquable.onmouseover = function() {
+                        document.body.style.cursor = "pointer";
+                    };
+                    titreCliquable.onmouseout = function() {
+                        document.body.style.cursor = "default";
+                    };
+                    titreCliquable.onclick = function() {
+                        window.location.href = "http://213.32.90.43/projet-tutore";
+                    };
+                </script>
 
                 <form class="navbar-form navbar-left decalage_navbar" action="../search/" method="post">
                     <div class="input-group">
