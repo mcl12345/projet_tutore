@@ -6,16 +6,15 @@ include("../logo_search_menu/index.php");
 // Affichage du logo , du formulaire de recherche et du menu
 print_LOGO_FORMSEARCH_MENU($db_host, $db_name, $db_user, $db_password);
 
-// Va chercher le genre à afficher
+// Récupère le genre à afficher
 $i = 0;
 $genre = array();
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
+$pdo = new PDO("mysql:host=$db_host; dbname=$db_name", $db_user, $db_password);
 $stmt = $pdo->prepare("SELECT * FROM genre");
 $stmt->execute();
 while($row = $stmt->fetch()) {
-    if($row['id'] == 999) {
-      // on ne fait rien
-    } else {
+    // Pourquoi 999 précisement ?
+    if($row['id'] != 999) {
         $genre[$i]["nom"] = $row['nom'];
         $genre[$i]["id"] = $row['id'];
         $i++;
@@ -27,7 +26,7 @@ for($i=0; $i < sizeof($genre); $i++) {
     $morceau[$genre[$i]["nom"]] = array();
     try {
         $j = 0;
-        $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
+        $pdo = new PDO("mysql:host=$db_host; dbname=$db_name", $db_user, $db_password);
         $stmt = $pdo->prepare("SELECT * FROM morceau_genre WHERE id_genre = ?");
         if ($stmt->execute(array($genre[$i]["id"]))) {
           while ($row = $stmt->fetch()) {
@@ -68,7 +67,7 @@ foreach ($morceau as $genre => $value) {
     for ($i=0; $i < sizeof($value); $i++) {
         if($value[$i]['extension'] == ".webm") { echo "video : " ;}
         if($value[$i]['extension'] == ".ogg") { echo "audio : " ;}
-        echo "<a href='player.php?id=".$value[$i]['identifiant']."'>" . $value[$i]['titre'] . "</a><br />";
+        echo "<a href='../player/?id=".$value[$i]['identifiant']."'>" . $value[$i]['titre'] . "</a><br />";
         echo $value[$i]['duree'];
         echo $value[$i]['date_de_parution'];
     }
